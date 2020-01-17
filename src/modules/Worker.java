@@ -1,14 +1,20 @@
 package modules;
 
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
 
 public class Worker implements Runnable {
-    ArrayList<Byte> dataChunk;
-    int maxSize;
-    long firstByteIndex;
-    long lastByteIndex;
+    DataChunk dataChunk;
+    Socket socket = null;
+    BufferedReader reader = null;
+    PrintWriter writer = null;
 
-
+    public Worker(long firstByteIndex, long lastByteIndex, String url){
+        connect();
+    }
 
     @Override
     public void run() {
@@ -16,6 +22,14 @@ public class Worker implements Runnable {
     }
 
     private void connect(){
+
+    }
+
+    private void readFromServer(){
+
+    }
+
+    private void writeToQueue(BlockingQueue queue){
 
     }
 }
