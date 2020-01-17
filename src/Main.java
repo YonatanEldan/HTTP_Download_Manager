@@ -1,4 +1,4 @@
-import modules.*
+import modules.*;
 import java.net.*;
 import  java.io.*;
 import java.util.*;
@@ -18,19 +18,12 @@ public class Main {
         // init blocking queue
         ArrayBlockingQueue<DataChunk> queue = new ArrayBlockingQueue<>(1000);
 
-
-//        queue.put();
-//        queue.poll();
-
-
         // init worker obj
-       // Worker worker = new Worker(0, )
-        //Worker worker = new Worker();
+        String url = "http://centos.activecloud.co.il/6.10/isos/x86_64/CentOS-6.10-x86_64-netinstall.iso";
+        Worker worker = new Worker(0, 240123904, url, 4096, queue);
+        worker.run();
 
-       // connect to server
-
-       //loop: read all the remote file by chunks.
-
+        System.out.println("the size of the queue is : " + queue.size());
     }
 
 
