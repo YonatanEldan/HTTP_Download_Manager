@@ -4,7 +4,7 @@ public class Main {
        // get input from the user
 
 
-       // init worker
+       // init worker obj
 
        // connect to server
 
