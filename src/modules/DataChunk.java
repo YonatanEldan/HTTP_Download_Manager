@@ -15,6 +15,11 @@ public class DataChunk{
             this.size = (int)(lastByteIndex - firstByteIndex);
         }
 
+        public DataChunk(DataChunk dc){
+                this(dc.firstByteIndex, dc.lastByteIndex);
+                this.data = dc.data;
+        }
+
         public long getFirstByteIndex() {
             return this.firstByteIndex;
         }

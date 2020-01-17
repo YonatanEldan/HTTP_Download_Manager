@@ -1,4 +1,4 @@
-import modules.Worker;
+import modules.*
 import java.net.*;
 import  java.io.*;
 import java.util.*;
@@ -16,13 +16,15 @@ public class Main {
         }
 
         // init blocking queue
-        ArrayBlockingQueue<Byte> queue = new ArrayBlockingQueue<Byte>(1000);
+        ArrayBlockingQueue<DataChunk> queue = new ArrayBlockingQueue<>(1000);
+
+
 //        queue.put();
 //        queue.poll();
 
 
         // init worker obj
-
+       // Worker worker = new Worker(0, )
         //Worker worker = new Worker();
 
        // connect to server

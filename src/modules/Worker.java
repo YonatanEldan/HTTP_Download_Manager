@@ -30,7 +30,7 @@ public class Worker implements Runnable {
 
     @Override
     public void run() {
-        while(this.firstByteIndex + this.sizeOfChunk <= this.lastByteIndex) {
+        while(this.firstByteIndex + this.sizeOfChunk < this.lastByteIndex) {
             readFromServer();
             writeToQueue();
             this.firstByteIndex += this.sizeOfChunk;
@@ -69,7 +69,7 @@ public class Worker implements Runnable {
             e.printStackTrace();
             System.out.println("error in writeToQueue");
         }
-        this.dataChunk.data = [];
+      //  this.dataChunk.data = [];
 
     }
 }
