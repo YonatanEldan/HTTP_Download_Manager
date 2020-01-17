@@ -34,7 +34,7 @@ public class Worker implements Runnable {
     @Override
     public void run() {
         while(this.firstByteIndex + this.sizeOfChunk < this.lastByteIndex) {
-            System.out.println("number of iteration" + iteration + "firstByteIndex" + this.firstByteIndex + "lastByteIndex" + this.lastByteIndex );
+            System.out.println("number of iteration " + iteration + "firstByteIndex " + this.firstByteIndex + "lastByteIndex " + this.lastByteIndex );
             this.dataChunk = new DataChunk(this.firstByteIndex, this.firstByteIndex + sizeOfChunk);
             readFromServer();
             writeToQueue();
