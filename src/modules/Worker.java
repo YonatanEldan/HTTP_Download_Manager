@@ -8,12 +8,15 @@ import java.util.concurrent.BlockingQueue;
 
 public class Worker implements Runnable {
     DataChunk dataChunk;
-    Socket socket = null;
+    String url;
+    long firstByteIndex, lastByteIndex;
     BufferedReader reader = null;
     PrintWriter writer = null;
 
     public Worker(long firstByteIndex, long lastByteIndex, String url){
-        connect();
+        this.firstByteIndex = firstByteIndex;
+        this.lastByteIndex = lastByteIndex;
+        this.url = url;
     }
 
     @Override
