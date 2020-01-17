@@ -1,6 +1,15 @@
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Hello Yonatan!");
+       // get input from the user
+
+
+       // init worker
+
+       // connect to server
+
+       //loop: read all the remote file by chunks.
+
+
     }
 }
