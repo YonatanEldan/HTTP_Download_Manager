@@ -13,17 +13,17 @@ import java.util.concurrent.BlockingQueue;
 public class Worker implements Runnable {
     DataChunk dataChunk;
     String url;
-    long firstByteIndex, lastByteIndex;
+    long firstByteIndex, curByteIndex,lastByteIndex;
     BufferedReader reader = null;
     PrintWriter writer = null;
     int sizeOfChunk;
     ArrayBlockingQueue<DataChunk> queue;
-
     //Testing paramaters
     int iteration = 1;
 
     public Worker(long firstByteIndex, long lastByteIndex, String url, int sizeOfChunk, ArrayBlockingQueue<DataChunk> queue){
         this.firstByteIndex = firstByteIndex;
+        this.curByteIndex = firstByteIndex;
         this.lastByteIndex = lastByteIndex;
         this.url = url;
         this.sizeOfChunk = sizeOfChunk;
@@ -33,21 +33,23 @@ public class Worker implements Runnable {
 
     @Override
     public void run() {
-        while(this.firstByteIndex + this.sizeOfChunk < this.lastByteIndex) {
-            System.out.println("number of iteration " + iteration + "firstByteIndex " + this.firstByteIndex + "lastByteIndex " + this.lastByteIndex );
-            this.dataChunk = new DataChunk(this.firstByteIndex, this.firstByteIndex + sizeOfChunk);
+        while(this.curByteIndex < this.lastByteIndex) {
+            System.out.println("\n number of iteration " + iteration + "\n firstByteIndex: " + this.firstByteIndex + "\n lastByteIndex: " + this.lastByteIndex );
+            // checking if we are at the last packet, might have a different size.
+            if(this.curByteIndex + this.sizeOfChunk < this.lastByteIndex) {
+                this.dataChunk = new DataChunk(this.curByteIndex, this.curByteIndex + this.sizeOfChunk);
+            }
+            else{
+                this.dataChunk = new DataChunk(this.curByteIndex, this.lastByteIndex);
+            }
             readFromServer();
             writeToQueue();
-            this.firstByteIndex += this.sizeOfChunk;
+            this.curByteIndex += this.sizeOfChunk;
+            // for testing purposes
             iteration++;
         }
-
-
     }
 
-    private void connect(){
-
-    }
 
     private void readFromServer(){
         try {
@@ -57,7 +59,7 @@ public class Worker implements Runnable {
             con.setRequestProperty("Range", "bytes="+ dataChunk.getFirstByteIndex()+"-" + dataChunk.getlastByteIndex());
             InputStream inputStream = con.getInputStream();
             byte[] buffer = new byte[this.dataChunk.size];
-            System.out.println("Iteration" + iteration + "http status" + con.getResponseCode());
+            System.out.println("\n http status: " + con.getResponseCode());
             // read stream data into buffer
             inputStream.read(buffer);
             this.dataChunk.data = buffer;
