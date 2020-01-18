@@ -20,15 +20,10 @@ public class Main {
 
         // init worker obj
         String url = "http://centos.activecloud.co.il/6.10/isos/x86_64/CentOS-6.10-x86_64-netinstall.iso";
-        Worker worker = new Worker(0, 240123904, url, 4096, queue);
-        worker.run();
+        Worker worker = new Worker(0, 240123904, url, 409600, queue);
+        Thread T = new Thread(worker);
+        T.run();
 
         System.out.println("the size of the queue is : " + queue.size());
     }
-
-
-
-
-
-    }
-
+}

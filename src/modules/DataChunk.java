@@ -24,8 +24,6 @@ public class DataChunk{
             return this.firstByteIndex;
         }
 
-        public long getlastByteIndex() {
-            return this.lastByteIndex;
-        }
+        public long getlastByteIndex() { return this.lastByteIndex; }
 
 }
