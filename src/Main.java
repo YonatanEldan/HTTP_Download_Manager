@@ -30,7 +30,7 @@ public class Main {
         //init writer obj
         RandomAccessFile raf = new RandomAccessFile("NewFileJava.iso", "rw");
         Writer writer = new Writer(queue, raf);
-        write.run();
+        writer.run();
         raf.close();
 
 
