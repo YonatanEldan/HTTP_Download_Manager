@@ -20,7 +20,6 @@ public class Main {
         // init blocking queue
         ArrayBlockingQueue<DataChunk> queue = new ArrayBlockingQueue<>(1000);
 
-
         // init worker obj
         String url = "http://centos.activecloud.co.il/6.10/isos/x86_64/CentOS-6.10-x86_64-netinstall.iso";
         Worker worker = new Worker(0, 240123904, url, 4096, queue);
@@ -37,4 +36,8 @@ public class Main {
         System.out.println("finished the program succesfully!");
 
     }
+
+
+
+
 }
