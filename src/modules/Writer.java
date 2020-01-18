@@ -10,6 +10,7 @@ public class Writer implements Runnable{
     ArrayBlockingQueue<DataChunk> queue;
     RandomAccessFile file;
     DataChunk dataChunk;
+    boolean active = true;
 
     public Writer(ArrayBlockingQueue q, RandomAccessFile f){
         this.queue = q;
@@ -20,10 +21,15 @@ public class Writer implements Runnable{
     @Override
     public void run() {
 
-        while(true){
+        while(active){
             try {
+                // get the dataChunk from the queue
                 dataChunk = queue.take();
+
+                // write to the file
                 file.seek(dataChunk.getFirstByteIndex());
+                file.write(dataChunk.data);
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -31,6 +37,10 @@ public class Writer implements Runnable{
             }
         }
 
+    }
+
+    public void finish(){
+        active = false;
     }
 
 }
