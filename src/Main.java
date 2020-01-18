@@ -23,12 +23,13 @@ public class Main {
 
         // init worker obj
         String url = "http://centos.activecloud.co.il/6.10/isos/x86_64/CentOS-6.10-x86_64-netinstall.iso";
-        Worker worker = new Worker(0, 240123904, url, 409600, queue);
+        Worker worker = new Worker(0, 240123904, url, 4096, queue);
         Thread T = new Thread(worker);
-        T.run();
-
+        T.start();
+        System.out.println("Started a new thread");
+        System.out.println("passed the worker thread");
         //init writer obj
-        RandomAccessFile raf = new RandomAccessFile("NewFileJava.iso", "rw");
+        RandomAccessFile raf = new RandomAccessFile("TestFileJava.iso", "rw");
         Writer writer = new Writer(queue, raf);
         writer.run();
         raf.close();

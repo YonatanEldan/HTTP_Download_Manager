@@ -25,10 +25,16 @@ public class Writer implements Runnable{
             try {
                 // get the dataChunk from the queue
                 dataChunk = queue.take();
+                if(dataChunk.getFirstByteIndex() == -1 && dataChunk.getlastByteIndex() ==-1){
+                    finish();
+                }
+                else {
+                    // write to the file
+                    file.seek(dataChunk.getFirstByteIndex());
+                    file.write(dataChunk.data);
+                    System.out.println("written to:" + dataChunk.getFirstByteIndex());
+                }
 
-                // write to the file
-                file.seek(dataChunk.getFirstByteIndex());
-                file.write(dataChunk.data);
 
             } catch (InterruptedException e) {
                 e.printStackTrace();

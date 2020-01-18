@@ -9,8 +9,8 @@ public class DataChunk{
         int size;
 
         public DataChunk(long startIndex, long endIndexx){
-            this.firstByteIndex = firstByteIndex;
-            this.lastByteIndex = lastByteIndex;
+            this.firstByteIndex = startIndex;
+            this.lastByteIndex = endIndexx;
             this.data = new byte[(int)(lastByteIndex-firstByteIndex)];
             this.size = (int)(lastByteIndex - firstByteIndex);
         }

@@ -28,13 +28,13 @@ public class Worker implements Runnable {
         this.url = url;
         this.sizeOfChunk = sizeOfChunk;
         this.queue = queue;
-        this.dataChunk = new DataChunk(this.firstByteIndex, this.firstByteIndex + this.sizeOfChunk);
+        this.dataChunk = new DataChunk(this.curByteIndex, this.curByteIndex + this.sizeOfChunk);
     }
 
     @Override
     public void run() {
         while(this.curByteIndex < this.lastByteIndex) {
-            System.out.println("\n number of iteration " + iteration + "\n firstByteIndex: " + this.firstByteIndex + "\n lastByteIndex: " + this.lastByteIndex );
+            //System.out.println("\n number of iteration " + iteration + "\n curByteIndex: " + this.curByteIndex + "\n lastByteIndex: " + this.lastByteIndex );
             // checking if we are at the last packet, might have a different size.
             if(this.curByteIndex + this.sizeOfChunk < this.lastByteIndex) {
                 this.dataChunk = new DataChunk(this.curByteIndex, this.curByteIndex + this.sizeOfChunk);
@@ -42,12 +42,15 @@ public class Worker implements Runnable {
             else{
                 this.dataChunk = new DataChunk(this.curByteIndex, this.lastByteIndex);
             }
+            System.out.println("Current first byte" + this.curByteIndex);
             readFromServer();
             writeToQueue();
             this.curByteIndex += this.sizeOfChunk;
             // for testing purposes
             iteration++;
         }
+        this.dataChunk = new DataChunk(-1,-1);
+        writeToQueue();
     }
 
 
@@ -56,10 +59,11 @@ public class Worker implements Runnable {
             URL url = new URL(this.url);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
+            // check if the get returns the lastByteIndex
             con.setRequestProperty("Range", "bytes="+ dataChunk.getFirstByteIndex()+"-" + dataChunk.getlastByteIndex());
             InputStream inputStream = con.getInputStream();
             byte[] buffer = new byte[this.dataChunk.size];
-            System.out.println("\n http status: " + con.getResponseCode());
+            //System.out.println("\n http status: " + con.getResponseCode());
             // read stream data into buffer
             inputStream.read(buffer);
             this.dataChunk.data = buffer;
