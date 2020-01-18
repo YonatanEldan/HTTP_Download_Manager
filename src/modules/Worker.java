@@ -28,7 +28,7 @@ public class Worker implements Runnable {
         this.url = url;
         this.sizeOfChunk = sizeOfChunk;
         this.queue = queue;
-        this.dataChunk = new DataChunk(this.curByteIndex, this.curByteIndex + this.sizeOfChunk);
+        this.dataChunk = new DataChunk(this.curByteIndex, this.curByteIndex + this.sizeOfChunk -1);
     }
 
     @Override
@@ -37,12 +37,12 @@ public class Worker implements Runnable {
             //System.out.println("\n number of iteration " + iteration + "\n curByteIndex: " + this.curByteIndex + "\n lastByteIndex: " + this.lastByteIndex );
             // checking if we are at the last packet, might have a different size.
             if(this.curByteIndex + this.sizeOfChunk < this.lastByteIndex) {
-                this.dataChunk = new DataChunk(this.curByteIndex, this.curByteIndex + this.sizeOfChunk);
+                this.dataChunk = new DataChunk(this.curByteIndex, this.curByteIndex + this.sizeOfChunk-1);
             }
             else{
                 this.dataChunk = new DataChunk(this.curByteIndex, this.lastByteIndex);
             }
-            System.out.println("Current first byte" + this.curByteIndex);
+            //System.out.println("Current first byte" + this.curByteIndex);
             readFromServer();
             writeToQueue();
             this.curByteIndex += this.sizeOfChunk;
@@ -65,6 +65,7 @@ public class Worker implements Runnable {
             byte[] buffer = new byte[this.dataChunk.size];
             //System.out.println("\n http status: " + con.getResponseCode());
             // read stream data into buffer
+            System.out.println(con.getHeaderField("Content-Length"));
             inputStream.read(buffer);
             this.dataChunk.data = buffer;
             inputStream.close();

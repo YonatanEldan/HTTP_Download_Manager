@@ -34,8 +34,7 @@ public class Main {
         writer.run();
         raf.close();
 
-
-        System.out.println("the size of the queue is : " + queue.size());
+        System.out.println("finished the program succesfully!");
 
     }
 }
