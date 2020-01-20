@@ -31,7 +31,7 @@ public class Writer implements Runnable{
                 else {
                     // write to the file
                     file.seek(dataChunk.getFirstByteIndex());
-                    file.write(dataChunk.data);
+                    file.write(dataChunk.data, 0, dataChunk.size);
                     //System.out.println("written to:" + dataChunk.getFirstByteIndex());
                 }
 
