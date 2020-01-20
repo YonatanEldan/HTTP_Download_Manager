@@ -6,8 +6,8 @@ public class DataChunk{
     private int size;
     private byte[] data;
 
-    public DataChunk(long startIndex, int size){
-        this.firstByteIndex = startIndex;
+    public DataChunk(long firstByteIndex, int size){
+        this.firstByteIndex = firstByteIndex;
         this.size = size;
         this.data = new byte[size];
 
@@ -25,4 +25,7 @@ public class DataChunk{
         return data;
     }
 
+    public void setSize(int size) {
+        this.size = size;
+    }
 }
