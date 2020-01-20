@@ -1,29 +1,28 @@
 package modules;
 
-import javax.xml.crypto.Data;
-
 public class DataChunk{
 
-        private long firstByteIndex, lastByteIndex;
-        byte[] data;
-        int size;
+    private long firstByteIndex;
+    private int size;
+    private byte[] data;
 
-        public DataChunk(long startIndex, long endIndexx){
-            this.firstByteIndex = startIndex;
-            this.lastByteIndex = endIndexx;
-            this.data = new byte[(int)(lastByteIndex-firstByteIndex)];
-            this.size = (int)(lastByteIndex - firstByteIndex);
-        }
+    public DataChunk(long startIndex, int size){
+        this.firstByteIndex = startIndex;
+        this.size = size;
+        this.data = new byte[size];
 
-        public DataChunk(DataChunk dc){
-                this(dc.firstByteIndex, dc.lastByteIndex);
-                this.data = dc.data;
-        }
+    }
 
-        public long getFirstByteIndex() {
-            return this.firstByteIndex;
-        }
+    public long getFirstByteIndex() {
+        return firstByteIndex;
+    }
 
-        public long getlastByteIndex() { return this.lastByteIndex; }
+    public int getSize() {
+        return size;
+    }
+
+    public byte[] getData() {
+        return data;
+    }
 
 }
