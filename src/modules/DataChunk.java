@@ -10,7 +10,6 @@ public class DataChunk{
         this.firstByteIndex = firstByteIndex;
         this.size = size;
         this.data = new byte[size];
-
     }
 
     public long getFirstByteIndex() {

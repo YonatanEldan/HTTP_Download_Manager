@@ -58,9 +58,7 @@ public class Worker implements Runnable {
             System.err.println(RuntimeMessages.FAILED_TO_FETCH_DATA_FROM_SERVER);
         }
 
-        // when finished, put a dummy chunk in the queue.
-        // *** in future development this line will be execute be the Manager.
-        writeToQueue(new DataChunk(-1,0));
+
 
         try {
             this.inputStream.close();
