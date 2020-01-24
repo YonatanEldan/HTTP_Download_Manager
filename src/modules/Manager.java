@@ -68,7 +68,7 @@ public class Manager implements Runnable{
     public static long getFileInfo(String URL) {
         try {
             URL Url = new URL(URL);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) Url.openConnection();
             conn.setRequestMethod("HEAD");
             return conn.getContentLengthLong();
 
