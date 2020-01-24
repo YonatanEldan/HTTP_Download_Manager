@@ -10,20 +10,37 @@ import java.util.concurrent.BlockingQueue;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException {
+        String[] servers = null;
 
-       // get input from the user
-        for (String s: args) {
-            System.out.println(s);
-        }
+        if (isURL(args[0])) {
+            servers[0] = args[0];
+        } else {
+            servers = null;
+            List<String> itemsSchool = new ArrayList<String>();
 
-        String[] servers = {"https://ia800303.us.archive.org/19/items/Mario1_500/Mario1_500.avi"};
+            try {
+                FileInputStream fstream_school = new FileInputStream(args[0]);
+                DataInputStream data_input = new DataInputStream(fstream_school);
+                BufferedReader buffer = new BufferedReader(new InputStreamReader(data_input));
+                String str_line;
 
-        //init manager
-        Manager manager = new Manager(servers, 2);
-        manager.run();
+                while ((str_line = buffer.readLine()) != null) {
+                    str_line = str_line.trim();
+                    if ((str_line.length() != 0)) {
+                        itemsSchool.add(str_line);
+                    }
+                }
+
+                servers = (String[]) itemsSchool.toArray(new String[itemsSchool.size()]);
+            } catch (Exception E) {
+                E.printStackTrace();
+            }
 
 
+            //init manager
+            Manager manager = new Manager(servers, 2);
+            manager.run();
 
 
 //        // init blocking queue
@@ -42,7 +59,18 @@ public class Main {
 //        writer.run();
 //        raf.close();
 
-        System.out.println("Program finished successfully!");
+            System.out.println("Program finished successfully!");
+        }
     }
 
+    public static boolean isURL(String url){
+        try {
+            new URL(url);
+            return true;
+        } catch (Exception e){
+            return false;
+        }
+
+    }
 }
+

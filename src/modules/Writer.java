@@ -18,6 +18,7 @@ public class Writer implements Runnable{
 
     @Override
     public void run() {
+        int i = 0;
 
         while(active){
             try {
@@ -37,6 +38,8 @@ public class Writer implements Runnable{
                     System.out.println("data chunk was writen to file \n" +
                                         "offset: " + dataChunk.getFirstByteIndex() + "\n" +
                                         "size: " + dataChunk.getSize() + "\n");
+                    i++;
+
 
                 }
 
