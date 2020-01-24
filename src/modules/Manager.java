@@ -1,71 +1,122 @@
 package modules;
 
 import Constants.RuntimeMessages;
+
 import java.io.IOException;
 
-import java.io.RandomAccessFile;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class Manager implements Runnable{
+public class Manager implements Runnable {
     String[] servers;
-    int MAX_THREADS_NUM;
-    int fileSize = 0;
+    int NUM_OF_WORKING_THREADS;
+    long fileSize = 0;
 
     // init blocking queue
     ArrayBlockingQueue<DataChunk> queue = new ArrayBlockingQueue<>(1000);
 
-    public Manager(String[] servers, int maxThreadNum){
+    public Manager(String[] servers, int maxThreadNum) {
         this.servers = servers;
-        this.MAX_THREADS_NUM = maxThreadNum;
+
+        // be default assign one worker per server.
+        this.NUM_OF_WORKING_THREADS = maxThreadNum;
     }
 
     @Override
     public void run() {
 
-        //work
-        int halfPoint = this.fileSize / 2;
+        this.fileSize = getFileInfo(this.servers[0]);
 
-        Worker worker1 = new Worker(0, halfPoint, this.servers[0], 4096, queue);
-        Thread w1 = new Thread(worker1);
+        List<Thread> workerThreads = initWorkerThreads();
 
-        Worker worker2 = new Worker(halfPoint + 1, fileSize - 1 , this.servers[0], 4096, queue);
-        Thread w2 = new Thread(worker2);
+//        //work
+//        long halfPoint = this.fileSize / 2;
+//
+//        Worker worker1 = new Worker(0, halfPoint, this.servers[0], 4096, queue);
+//        Thread w1 = new Thread(worker1);
+//
+//        Worker worker2 = new Worker(halfPoint + 1, fileSize - 1 , this.servers[0], 4096, queue);
+//        Thread w2 = new Thread(worker2);
 
-        w1.start();
-        w2.start();
+        //start the workers
+        for (Thread thread : workerThreads) {
+            thread.start();
+        }
         System.out.println("Started the workers threads");
 
 
         //init and start the writer.
+        Writer writer = new Writer(queue, "downloadedMario.avi");
+        Thread writerThread = new Thread(writer);
+        writerThread.start();
+        System.out.println("Started the writer thread");
+
+
         try {
-            RandomAccessFile raf = new RandomAccessFile("downloadedMario.avi", "rw");
-            Writer writer = new Writer(queue, raf);
-            writer.run();
-            raf.close();
-        } catch (IOException e) {
+
+            //join the workers
+            for (Thread thread : workerThreads) {
+                thread.join();
+            }
+
+            //insert dummy:
+            // when finished, put a dummy chunk in the queue.
+            writeToQueue(new DataChunk(-1, 0));
+
+            writerThread.join();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        // wait for the workers
-
-        //insert dummy
-        // when finished, put a dummy chunk in the queue.
-        // *** in future development this line will be execute be the Manager.
-       writeToQueue(new DataChunk(-1, 0));
-
     }
 
-    private void writeToQueue(DataChunk dataChunk){
-        try{
+    private List<Thread> initWorkerThreads() {
+        List<Thread> workerThreads = new LinkedList<>();
+
+        // divide the total file size into chunks in order to divide the work evenly between the workers.
+        long workerChunk = this.fileSize / this.NUM_OF_WORKING_THREADS;
+
+        // get the number of connections per server
+        int[] numOfConnections = new int[this.servers.length];
+        for (int i = 0; i < this.NUM_OF_WORKING_THREADS; i++) {
+            numOfConnections[i % servers.length]++;
+        }
+
+        long currStart = 0;
+        int workersCounter = 0;
+        for (int i = 0; i < servers.length; i++) {
+            for (int j = 0; j < numOfConnections[i]; j++) {
+
+                Worker worker;
+                if (workersCounter == this.NUM_OF_WORKING_THREADS) {
+                    // this is the last worker
+                    worker = new Worker(currStart, this.fileSize - 1, servers[i], 4096, queue);
+
+                } else {
+                    worker = new Worker(currStart, currStart + workerChunk - 1, servers[i], 4096, queue);
+                    workersCounter++;
+                }
+
+                workerThreads.add(new Thread(worker));
+                currStart += workerChunk;
+            }
+        }
+
+        return workerThreads;
+    }
+
+    private void writeToQueue(DataChunk dataChunk) {
+        try {
             this.queue.put(dataChunk);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.err.println(RuntimeMessages.FAILED_TO_INSERT_INTO_THE_QUEUE);
         }
     }
 
-    public static long getFileInfo(String URL) {
+    private static long getFileInfo(String URL) {
         try {
             URL url = new URL(URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();

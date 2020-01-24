@@ -1,6 +1,8 @@
 package modules;
 
 import Constants.*;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -8,17 +10,24 @@ import java.util.concurrent.ArrayBlockingQueue;
 public class Writer implements Runnable{
     ArrayBlockingQueue<DataChunk> queue;
     RandomAccessFile file;
+    String targetFileName;
     boolean active = true;
 
-    public Writer(ArrayBlockingQueue q, RandomAccessFile f){
+    public Writer(ArrayBlockingQueue q, String fileName){
         this.queue = q;
-        this.file = f;
+        this.targetFileName = fileName;
     }
 
 
     @Override
     public void run() {
         int i = 0;
+
+        try {
+            this.file = new RandomAccessFile(this.targetFileName, "rw");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         while(active){
             try {
@@ -48,6 +57,14 @@ public class Writer implements Runnable{
             } catch (IOException e) {
                 System.err.println(RuntimeMessages.FAILED_WHEN_WRITING_TO_FILE);
             }
+        }
+
+
+        try {
+            this.file.close();
+        } catch (IOException e) {
+            System.err.println("failed closing the target file!!!");
+            e.printStackTrace();
         }
     }
 
