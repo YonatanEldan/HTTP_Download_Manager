@@ -17,21 +17,30 @@ public class Main {
             System.out.println(s);
         }
 
-        // init blocking queue
-        ArrayBlockingQueue<DataChunk> queue = new ArrayBlockingQueue<>(1000);
+        String[] servers = {"https://ia800303.us.archive.org/19/items/Mario1_500/Mario1_500.avi"};
 
-        // init and start the worker.
-        String url = "https://ia800303.us.archive.org/19/items/Mario1_500/Mario1_500.avi";
-        Worker worker = new Worker(0, 24334492 - 1, url, 4096, queue);
-        Thread T = new Thread(worker);
-        T.start();
-        System.out.println("Started the worker thread");
+        //init manager
+        Manager manager = new Manager(servers, 2);
+        manager.run();
 
-        //init and start the writer.
-        RandomAccessFile raf = new RandomAccessFile("downloadedMario.avi", "rw");
-        Writer writer = new Writer(queue, raf);
-        writer.run();
-        raf.close();
+
+
+
+//        // init blocking queue
+//        ArrayBlockingQueue<DataChunk> queue = new ArrayBlockingQueue<>(1000);
+//
+//        // init and start the worker.
+//        String url = "https://ia800303.us.archive.org/19/items/Mario1_500/Mario1_500.avi";
+//        Worker worker = new Worker(0, 24334492 - 1, url, 4096, queue);
+//        Thread T = new Thread(worker);
+//        T.start();
+//        System.out.println("Started the worker thread");
+//
+//        //init and start the writer.
+//        RandomAccessFile raf = new RandomAccessFile("downloadedMario.avi", "rw");
+//        Writer writer = new Writer(queue, raf);
+//        writer.run();
+//        raf.close();
 
         System.out.println("Program finished successfully!");
     }
