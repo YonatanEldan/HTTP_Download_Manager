@@ -1,8 +1,10 @@
 package modules;
 
 import Constants.RuntimeMessages;
-
+import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class Manager implements Runnable{
     String[] servers;
@@ -49,6 +51,21 @@ public class Manager implements Runnable{
             System.err.println(RuntimeMessages.FAILED_TO_INSERT_INTO_THE_QUEUE);
         }
     }
+
+    public static long getFileInfo(String URL) {
+        try {
+            URL url = new URL(URL);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("HEAD");
+            return conn.getContentLengthLong();
+
+        } catch (IOException e) {
+            System.err.println(RuntimeMessages.SERVER_CONNECTION_FAILED);
+        }
+        return -1;
+    }
+
+
 
 
 }
