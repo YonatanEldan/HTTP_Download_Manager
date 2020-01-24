@@ -2,6 +2,8 @@ package modules;
 
 import Constants.RuntimeMessages;
 import java.io.IOException;
+
+import java.io.RandomAccessFile;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -35,7 +37,18 @@ public class Manager implements Runnable{
         w2.start();
         System.out.println("Started the workers threads");
 
-        // wait
+
+        //init and start the writer.
+        try {
+            RandomAccessFile raf = new RandomAccessFile("downloadedMario.avi", "rw");
+            Writer writer = new Writer(queue, raf);
+            writer.run();
+            raf.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // wait for the workers
 
         //insert dummy
         // when finished, put a dummy chunk in the queue.
