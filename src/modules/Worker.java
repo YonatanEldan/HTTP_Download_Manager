@@ -1,25 +1,20 @@
 package modules;
-import java.io.BufferedReader;
+
+import Constants.*;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.net.HttpURLConnection;
-import java.net.Socket;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
 public class Worker implements Runnable {
-    DataChunk dataChunk;
-    String url;
-    long firstByteIndex, curByteIndex,lastByteIndex;
-    BufferedReader reader = null;
-    PrintWriter writer = null;
-    int sizeOfChunk;
-    ArrayBlockingQueue<DataChunk> queue;
-    //Testing paramaters
-    int iteration = 1;
+    private String url;
+    private long firstByteIndex, curByteIndex,lastByteIndex;
+    private int sizeOfChunk;
+    private ArrayBlockingQueue<DataChunk> queue;
+
+    private InputStream inputStream;
 
     public Worker(long firstByteIndex, long lastByteIndex, String url, int sizeOfChunk, ArrayBlockingQueue<DataChunk> queue){
         this.firstByteIndex = firstByteIndex;
@@ -28,67 +23,57 @@ public class Worker implements Runnable {
         this.url = url;
         this.sizeOfChunk = sizeOfChunk;
         this.queue = queue;
-        this.dataChunk = new DataChunk(this.curByteIndex, this.curByteIndex + this.sizeOfChunk -1);
     }
 
     @Override
     public void run() {
-        while(this.curByteIndex < this.lastByteIndex) {
-            //System.out.println("\n number of iteration " + iteration + "\n curByteIndex: " + this.curByteIndex + "\n lastByteIndex: " + this.lastByteIndex );
-            // checking if we are at the last packet, might have a different size.
 
-            if(this.curByteIndex + this.sizeOfChunk < this.lastByteIndex) {
-                this.dataChunk = new DataChunk(this.curByteIndex, this.curByteIndex + this.sizeOfChunk-1);
+        //connect to server
+        try {
+            URL url = new URL(this.url);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Range", "bytes=" + this.firstByteIndex + "-" + this.lastByteIndex);
+
+            this.inputStream = connection.getInputStream();
+
+        } catch(IOException e){
+            System.err.println(RuntimeMessages.SERVER_CONNECTION_FAILED);
+        }
+
+        // read chunks and write to queue
+        try {
+            DataChunk currDataChunk = new DataChunk(this.curByteIndex, this.sizeOfChunk);
+            int bytesRead = this.inputStream.read(currDataChunk.getData());
+            while (bytesRead != -1) {
+                currDataChunk.setSize(bytesRead);
+                writeToQueue(currDataChunk);
+
+                this.curByteIndex += bytesRead;
+                currDataChunk = new DataChunk(this.curByteIndex, this.sizeOfChunk);
+                bytesRead = this.inputStream.read(currDataChunk.getData());
             }
-            else{
-                this.dataChunk = new DataChunk(this.curByteIndex, this.lastByteIndex);
-            }
 
-            //System.out.println("Current first byte" + this.curByteIndex);
-            readFromServer();
-            writeToQueue();
-            this.curByteIndex += this.sizeOfChunk;
-
-            // for testing purposes
-            iteration++;
+        }catch (IOException e){
+            System.err.println(RuntimeMessages.FAILED_TO_FETCH_DATA_FROM_SERVER);
         }
 
         // when finished, put a dummy chunk in the queue.
-        this.dataChunk = new DataChunk(-1,-1);
-        writeToQueue();
-    }
+        // *** in future development this line will be execute be the Manager.
+        writeToQueue(new DataChunk(-1,0));
 
-
-    private void readFromServer(){
         try {
-            URL url = new URL(this.url);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-
-            // check if the get returns the lastByteIndex
-            con.setRequestProperty("Range", "bytes="+ dataChunk.getFirstByteIndex()+"-" + dataChunk.getlastByteIndex());
-            InputStream inputStream = con.getInputStream();
-            byte[] buffer = new byte[this.dataChunk.size];
-            //System.out.println("\n http status: " + con.getResponseCode());
-
-            // read stream data into buffer
-            System.out.println(con.getHeaderField("Content-Length"));
-            inputStream.read(buffer);
-            this.dataChunk.data = buffer;
-            inputStream.close();
-        }catch(Exception e){
-            e.printStackTrace();
-            System.out.println("error in readFromServer");
+            this.inputStream.close();
+        }catch(IOException e){
+            System.err.println(RuntimeMessages.INPUTSTREAM_CLOSE_EXEPTION);
         }
     }
 
-    private void writeToQueue(){
+    private void writeToQueue(DataChunk dataChunk){
         try{
-            this.queue.put(this.dataChunk);
+            this.queue.put(dataChunk);
           }catch (Exception e){
-            e.printStackTrace();
-            System.out.println("error in writeToQueue");
+            System.err.println(RuntimeMessages.FAILED_TO_INSERT_INTO_THE_QUEUE);
         }
-
     }
 }

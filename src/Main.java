@@ -20,24 +20,20 @@ public class Main {
         // init blocking queue
         ArrayBlockingQueue<DataChunk> queue = new ArrayBlockingQueue<>(1000);
 
-        // init worker obj
+        // init and start the worker.
         String url = "https://ia800303.us.archive.org/19/items/Mario1_500/Mario1_500.avi";
         Worker worker = new Worker(0, 24334492 - 1, url, 4096, queue);
         Thread T = new Thread(worker);
         T.start();
         System.out.println("Started the worker thread");
 
-
-        //init writer obj
-        RandomAccessFile raf = new RandomAccessFile("TestFileJava.iso", "rw");
+        //init and start the writer.
+        RandomAccessFile raf = new RandomAccessFile("downloadedMario.avi", "rw");
         Writer writer = new Writer(queue, raf);
         writer.run();
         raf.close();
 
-        System.out.println("finished the program successfully!");
+        System.out.println("Program finished successfully!");
     }
-
-
-
 
 }

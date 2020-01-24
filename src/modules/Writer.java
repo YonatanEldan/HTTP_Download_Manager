@@ -1,7 +1,6 @@
 package modules;
 
-import jdk.jfr.DataAmount;
-
+import Constants.*;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -9,7 +8,6 @@ import java.util.concurrent.ArrayBlockingQueue;
 public class Writer implements Runnable{
     ArrayBlockingQueue<DataChunk> queue;
     RandomAccessFile file;
-    DataChunk dataChunk;
     boolean active = true;
 
     public Writer(ArrayBlockingQueue q, RandomAccessFile f){
@@ -24,25 +22,30 @@ public class Writer implements Runnable{
         while(active){
             try {
                 // get the dataChunk from the queue
-                dataChunk = queue.take();
-                if(dataChunk.getFirstByteIndex() == -1 && dataChunk.getlastByteIndex() ==-1){
+                DataChunk dataChunk = queue.take();
+
+                // detect the dummy node
+                if(dataChunk.getFirstByteIndex() == -1){
                     finish();
                 }
                 else {
                     // write to the file
                     file.seek(dataChunk.getFirstByteIndex());
-                    file.write(dataChunk.data, 0, dataChunk.size);
-                    //System.out.println("written to:" + dataChunk.getFirstByteIndex());
+                    file.write(dataChunk.getData(), 0, dataChunk.getSize());
+
+                    //test
+                    System.out.println("data chunk was writen to file \n" +
+                                        "offset: " + dataChunk.getFirstByteIndex() + "\n" +
+                                        "size: " + dataChunk.getSize() + "\n");
+
                 }
 
-
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                System.err.println(RuntimeMessages.FAILED_TO_TAKE_DATA_FROM_THE_QUEUE);
             } catch (IOException e) {
-                e.printStackTrace();
+                System.err.println(RuntimeMessages.FAILED_WHEN_WRITING_TO_FILE);
             }
         }
-
     }
 
     public void finish(){
