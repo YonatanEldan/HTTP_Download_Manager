@@ -38,7 +38,9 @@ public class Worker implements Runnable {
             this.inputStream = connection.getInputStream();
 
         } catch(IOException e){
-            System.err.println(RuntimeMessages.SERVER_CONNECTION_FAILED);
+            System.err.println(RuntimeMessages.SERVER_CONNECTION_FAILED + ":" + "\n " +
+                                "server name: " + this.url + "\n" +
+                                "cause: " + e.getMessage());
         }
 
         // read chunks and write to queue

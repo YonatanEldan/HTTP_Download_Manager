@@ -21,7 +21,6 @@ public class Writer implements Runnable{
 
     @Override
     public void run() {
-        int i = 0;
 
         try {
             this.file = new RandomAccessFile(this.targetFileName, "rw");
@@ -47,9 +46,6 @@ public class Writer implements Runnable{
                     System.out.println("data chunk was writen to file \n" +
                                         "offset: " + dataChunk.getFirstByteIndex() + "\n" +
                                         "size: " + dataChunk.getSize() + "\n");
-                    i++;
-
-
                 }
 
             } catch (InterruptedException e) {

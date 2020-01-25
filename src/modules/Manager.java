@@ -16,7 +16,7 @@ public class Manager implements Runnable {
     long fileSize = 0;
 
     // init blocking queue
-    ArrayBlockingQueue<DataChunk> queue = new ArrayBlockingQueue<>(1000);
+    ArrayBlockingQueue<DataChunk> queue = new ArrayBlockingQueue<>(500);
 
     public Manager(String[] servers, int maxThreadNum) {
         this.servers = servers;
@@ -32,15 +32,6 @@ public class Manager implements Runnable {
 
         List<Thread> workerThreads = initWorkerThreads();
 
-//        //work
-//        long halfPoint = this.fileSize / 2;
-//
-//        Worker worker1 = new Worker(0, halfPoint, this.servers[0], 4096, queue);
-//        Thread w1 = new Thread(worker1);
-//
-//        Worker worker2 = new Worker(halfPoint + 1, fileSize - 1 , this.servers[0], 4096, queue);
-//        Thread w2 = new Thread(worker2);
-
         //start the workers
         for (Thread thread : workerThreads) {
             thread.start();
@@ -49,7 +40,7 @@ public class Manager implements Runnable {
 
 
         //init and start the writer.
-        Writer writer = new Writer(queue, "downloadedMario.avi");
+        Writer writer = new Writer(queue, "CentOS-6.10-x86_64-netinstall-downloaded.iso");
         Thread writerThread = new Thread(writer);
         writerThread.start();
         System.out.println("Started the writer thread");
@@ -91,13 +82,14 @@ public class Manager implements Runnable {
             for (int j = 0; j < numOfConnections[i]; j++) {
 
                 Worker worker;
+                workersCounter++;
+
                 if (workersCounter == this.NUM_OF_WORKING_THREADS) {
                     // this is the last worker
                     worker = new Worker(currStart, this.fileSize - 1, servers[i], 4096, queue);
 
                 } else {
                     worker = new Worker(currStart, currStart + workerChunk - 1, servers[i], 4096, queue);
-                    workersCounter++;
                 }
 
                 workerThreads.add(new Thread(worker));

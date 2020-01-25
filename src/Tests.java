@@ -4,15 +4,22 @@ import java.util.Arrays;
 
 import modules.*;
 
+import javax.print.DocFlavor;
 
 
 public class Tests {
 
     public static void main(String[] arg){
 
+        //test the mario files
         String downLoadedFilePath = "downloadedMario.avi";
         String originFilePath = "Mario1_500.avi";
-        compareFiles(downLoadedFilePath, originFilePath);
+        //compareFiles(downLoadedFilePath, originFilePath);
+
+        //test the iso files
+        String origin = "CentOS-6.10-x86_64-netinstall.iso";
+        String downloaded = "CentOS-6.10-x86_64-netinstall-downloaded.iso";
+        compareFiles(downloaded, origin);
 
     }
 
@@ -23,7 +30,9 @@ public class Tests {
             byte[] f2 = Files.readAllBytes(Paths.get(file2Path));
 
             if(f1.length != f2.length){
-                System.out.println("compare files test: the length of the array bytes is different");
+                System.out.println("compare files test: the length of the array bytes is different\n" +
+                                    "downloaded (1st func arg) length is: " + f1.length + "\n" +
+                                    "origin (2nd func arg) length is: " + f2.length);
                 return;
             }
 
