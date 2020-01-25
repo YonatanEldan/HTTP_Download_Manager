@@ -50,8 +50,5 @@ public class Tests {
         } catch (IOException e) {
             System.err.println("failed to compare the files");
         }
-
-
-
     }
 }

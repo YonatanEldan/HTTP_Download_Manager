@@ -13,16 +13,18 @@ public class Worker implements Runnable {
     private long firstByteIndex, curByteIndex,lastByteIndex;
     private int sizeOfChunk;
     private ArrayBlockingQueue<DataChunk> queue;
+    private Manager manager;
 
     private InputStream inputStream;
 
-    public Worker(long firstByteIndex, long lastByteIndex, String url, int sizeOfChunk, ArrayBlockingQueue<DataChunk> queue){
+    public Worker(long firstByteIndex, long lastByteIndex, String url, int sizeOfChunk, ArrayBlockingQueue<DataChunk> queue, Manager manager){
         this.firstByteIndex = firstByteIndex;
         this.curByteIndex = firstByteIndex;
         this.lastByteIndex = lastByteIndex;
         this.url = url;
         this.sizeOfChunk = sizeOfChunk;
         this.queue = queue;
+        this.manager = manager;
     }
 
     @Override
@@ -45,15 +47,29 @@ public class Worker implements Runnable {
 
         // read chunks and write to queue
         try {
-            DataChunk currDataChunk = new DataChunk(this.curByteIndex, this.sizeOfChunk);
-            int bytesRead = this.inputStream.read(currDataChunk.getData());
-            while (bytesRead != -1) {
-                currDataChunk.setSize(bytesRead);
-                writeToQueue(currDataChunk);
 
-                this.curByteIndex += bytesRead;
+            DataChunk currDataChunk;
+            int bytesRead = 0;
+            while (bytesRead != -1) {
                 currDataChunk = new DataChunk(this.curByteIndex, this.sizeOfChunk);
-                bytesRead = this.inputStream.read(currDataChunk.getData());
+                bytesRead = 0;
+
+               //fill all the dataChunk (except maybe for the last chunk of the file).
+               while(bytesRead < this.sizeOfChunk){
+                   int temp = this.inputStream.read(currDataChunk.getData(), bytesRead, this.sizeOfChunk-bytesRead);
+
+                   // break if you got to the end of the stream.
+                   if(temp == -1){
+                       currDataChunk.setSize(bytesRead);
+                       bytesRead = -1;
+                       break;
+                   } else{
+                       bytesRead += temp;
+                   }
+               }
+
+                writeToQueue(currDataChunk);
+                this.curByteIndex += this.sizeOfChunk;
             }
 
         }catch (IOException e){

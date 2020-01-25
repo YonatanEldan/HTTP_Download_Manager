@@ -38,14 +38,20 @@ public class Main {
             }
         }
 
-        maxNumOfThreads = 12;
+        maxNumOfThreads = 3;
 
         //init manager
         Manager manager = new Manager(servers, maxNumOfThreads);
         manager.run();
 
 
-        System.out.println("Program finished successfully!");
+        System.out.println("Download finished !");
+
+        // run the tests and delete the new file
+        Tests.main(new String[]{});
+        System.out.println("deleting the new file and exit the program...");
+        File res = new File("CentOS-6.10-x86_64-netinstall-downloaded.iso");
+        res.delete();
 
     }
 

@@ -14,6 +14,7 @@ public class Manager implements Runnable {
     String[] servers;
     int NUM_OF_WORKING_THREADS;
     long fileSize = 0;
+    private final int SIZE_OF_DATACHUNK = 4096;
 
     // init blocking queue
     ArrayBlockingQueue<DataChunk> queue = new ArrayBlockingQueue<>(500);
@@ -67,33 +68,31 @@ public class Manager implements Runnable {
     private List<Thread> initWorkerThreads() {
         List<Thread> workerThreads = new LinkedList<>();
 
-        // divide the total file size into chunks in order to divide the work evenly between the workers.
-        long workerChunk = this.fileSize / this.NUM_OF_WORKING_THREADS;
-
         // get the number of connections per server
         int[] numOfConnections = new int[this.servers.length];
         for (int i = 0; i < this.NUM_OF_WORKING_THREADS; i++) {
             numOfConnections[i % servers.length]++;
         }
 
+        // divide the total file size into parts in order to divide the work evenly between the workers.
+        long numOfBytesPerWorker = this.SIZE_OF_DATACHUNK * calcNunOfChunksPerWorker();
+
         long currStart = 0;
         int workersCounter = 0;
         for (int i = 0; i < servers.length; i++) {
             for (int j = 0; j < numOfConnections[i]; j++) {
-
                 Worker worker;
                 workersCounter++;
 
                 if (workersCounter == this.NUM_OF_WORKING_THREADS) {
                     // this is the last worker
-                    worker = new Worker(currStart, this.fileSize - 1, servers[i], 4096, queue);
-
+                    worker = new Worker(currStart, this.fileSize - 1, servers[i], this.SIZE_OF_DATACHUNK, queue, this);
                 } else {
-                    worker = new Worker(currStart, currStart + workerChunk - 1, servers[i], 4096, queue);
+                    worker = new Worker(currStart, currStart + numOfBytesPerWorker, servers[i], 4096, queue, this);
                 }
 
                 workerThreads.add(new Thread(worker));
-                currStart += workerChunk;
+                currStart += numOfBytesPerWorker;
             }
         }
 
@@ -108,7 +107,7 @@ public class Manager implements Runnable {
         }
     }
 
-    private static long getFileInfo(String URL) {
+    private long getFileInfo(String URL) {
         try {
             URL url = new URL(URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -121,5 +120,11 @@ public class Manager implements Runnable {
         return -1;
     }
 
+    private long calcNunOfChunksPerWorker(){
+        long totalDataChunksNum = this.fileSize / this.SIZE_OF_DATACHUNK ;
+        if((this.fileSize / this.SIZE_OF_DATACHUNK) % this.SIZE_OF_DATACHUNK != 0 ) totalDataChunksNum++;
+
+        return  totalDataChunksNum / this.NUM_OF_WORKING_THREADS;
+    }
 
 }
