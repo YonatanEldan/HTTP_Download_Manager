@@ -32,13 +32,13 @@ public class Worker implements Runnable {
     @Override
     public void run() {
 
-//        // TODO: check if the chunk is already written to the file.
-//
-//        //increase the curr byte as long as its corresponding chunk has been saved already.
-//        while(progressKeeper.isChunkSaved(this.curByteIndex)){
-//            this.curByteIndex += this.sizeOfChunk;
-//        }
-//        if (lastByteIndex < curByteIndex) return;
+        // TODO: check if the chunk is already written to the file.
+
+        //increase the curr byte as long as its corresponding chunk has been saved already.
+        while(progressKeeper.isChunkSaved(this.curByteIndex)){
+            this.curByteIndex += this.sizeOfChunk;
+        }
+        if (lastByteIndex < curByteIndex) return;
 
         //connect to server
         try {

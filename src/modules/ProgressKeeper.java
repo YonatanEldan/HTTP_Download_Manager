@@ -3,13 +3,19 @@ package modules;
 import Constants.ConfigurationsSettings;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 
 public class ProgressKeeper {
     private HashSet<Long> savedChunks;
     private String targetFileName;
-    private File mapMetaDataFile = new File("MapMetaD.ser");
+
+    private File mapMetaDataFile = new File("mapMetaD.ser");
     private File fileNameMetaDataFile = new File("nameMetaD.ser");
+    private File temp1MetaDataFile = new File("temp1MetaD.ser");
+    private File temp2MetaDataFile = new File("temp2MetaD.ser");
+
     private final int SIZE_OF_DATACHUNK = ConfigurationsSettings.SIZE_OF_DATACHUNK;
     private long targetFileSize;
     private int currProgress = 0;
@@ -36,8 +42,8 @@ public class ProgressKeeper {
             }
 
             this.savedChunks = new HashSet<>();
-            writeMetaDataFile(mapMetaDataFile, savedChunks);
-            writeMetaDataFile(fileNameMetaDataFile, targetFileName);
+            writeMetaDataFile(mapMetaDataFile, temp1MetaDataFile, savedChunks);
+            writeMetaDataFile(fileNameMetaDataFile, temp2MetaDataFile, targetFileName);
 
         }
     }
@@ -54,16 +60,22 @@ public class ProgressKeeper {
     }
 
     private void save(){
-        writeMetaDataFile(mapMetaDataFile, savedChunks);
+        writeMetaDataFile(mapMetaDataFile, temp1MetaDataFile, savedChunks);
     }
 
-    private void writeMetaDataFile(File metaDataFile, Object obj){
+    private void writeMetaDataFile(File metaDataFile, File tempMetaDataFile, Object obj){
         try {
-            FileOutputStream fos = new FileOutputStream(metaDataFile.getName());
+
+            // first, write to the temp meta data file
+            FileOutputStream fos = new FileOutputStream(tempMetaDataFile.getName());
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(obj);
             oos.close();
             fos.close();
+
+            // then, swap the content to the real meta data file
+            Files.move(tempMetaDataFile.toPath(), metaDataFile.toPath(), StandardCopyOption.ATOMIC_MOVE);
+
         } catch (IOException e){
             System.err.println(e.getMessage());
             e.printStackTrace();
@@ -82,7 +94,7 @@ public class ProgressKeeper {
             return obj;
         } catch(IOException | ClassNotFoundException e){
             System.err.println(e.getMessage());
-            System.err.println("could not read the meta dta file. a new object was returned instead");
+            System.err.println("could not read the meta data file. a new object was returned instead");
             e.printStackTrace();
         }
 

@@ -38,7 +38,7 @@ public class Main {
             }
         }
 
-        maxNumOfThreads = 12;
+        maxNumOfThreads = 16;
 
         //init manager
         Manager manager = new Manager(servers, maxNumOfThreads);
