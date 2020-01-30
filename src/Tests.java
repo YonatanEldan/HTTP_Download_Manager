@@ -4,6 +4,8 @@ import java.util.Arrays;
 
 import modules.*;
 
+import Constants.*;
+
 import javax.print.DocFlavor;
 
 
@@ -21,10 +23,17 @@ public class Tests {
         String downloaded = "CentOS-6.10-x86_64-netinstall-downloaded.iso";
         compareFiles(downloaded, origin);
 
+        // test the progressKeeper
+       // progressKeeperTest();
+
+
+
+
     }
 
-    public static void compareFiles(String file1Path, String file2Path){
-
+    private static void compareFiles(String file1Path, String file2Path){
+        System.out.println("compering files test: ");
+        System.out.println("new file name: "+ file1Path);
         try {
             byte[] f1 = Files.readAllBytes(Paths.get(file1Path));
             byte[] f2 = Files.readAllBytes(Paths.get(file2Path));
@@ -40,7 +49,7 @@ public class Tests {
             System.out.println("comparing files...");
             for (int i = 0; i < f1.length; i++) {
                 if(f1[i] != f2[i]){
-                    System.out.println("compare files test: the bytes at index " + i + " are different !");
+                    System.out.println("the bytes at index " + i + " are different !");
                     return;
                 }
             }
@@ -50,5 +59,31 @@ public class Tests {
         } catch (IOException e) {
             System.err.println("failed to compare the files");
         }
+    }
+
+    private static void progressKeeperTest() {
+        System.out.println("ProgressKeeper Test: \n");
+
+
+        // create an instance that will be trashed at the end of the if statement.
+        if(true) {
+            ProgressKeeper progressKeeper = new ProgressKeeper("test.txt", ConfigurationsSettings.SIZE_OF_DATACHUNK *300);
+
+            // add chunks
+            progressKeeper.addSavedChunk(1);
+            progressKeeper.addSavedChunk(2);
+            progressKeeper.addSavedChunk(3);
+        }
+
+        // create it again and check if the values were saved
+        ProgressKeeper progressKeeper = new ProgressKeeper("test.txt", 10);
+
+        System.out.println("is chunk 2 was saved already? " + progressKeeper.isChunkSaved(2));
+        System.out.println("is chunk 10 was saved already? " + progressKeeper.isChunkSaved(10));
+        System.out.println();
+
+        System.out.println(progressKeeper);
+
+        progressKeeper.delete();
     }
 }

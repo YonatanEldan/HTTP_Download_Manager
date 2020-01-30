@@ -38,7 +38,7 @@ public class Main {
             }
         }
 
-        maxNumOfThreads = 3;
+        maxNumOfThreads = 12;
 
         //init manager
         Manager manager = new Manager(servers, maxNumOfThreads);
@@ -50,8 +50,11 @@ public class Main {
         // run the tests and delete the new file
         Tests.main(new String[]{});
         System.out.println("deleting the new file and exit the program...");
-        File res = new File("CentOS-6.10-x86_64-netinstall-downloaded.iso");
-        res.delete();
+//        File res = new File("CentOS-6.10-x86_64-netinstall-downloaded.iso");
+//        res.delete();
+//
+//        File res2 = new File("downloadedMario.avi");
+//        res2.delete();
 
     }
 

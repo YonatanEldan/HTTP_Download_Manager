@@ -3,4 +3,5 @@ out/
 *.iml
 *.avi
 *.iso
+*.ser
 CentOS-6.10-x86_64-netinstall.iso.list

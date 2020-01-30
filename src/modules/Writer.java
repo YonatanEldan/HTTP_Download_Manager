@@ -8,14 +8,18 @@ import java.io.RandomAccessFile;
 import java.util.concurrent.ArrayBlockingQueue;
 
 public class Writer implements Runnable{
+    Manager manager;
+    ProgressKeeper progressKeeper;
     ArrayBlockingQueue<DataChunk> queue;
     RandomAccessFile file;
     String targetFileName;
     boolean active = true;
 
-    public Writer(ArrayBlockingQueue q, String fileName){
+    public Writer(ArrayBlockingQueue q, String fileName, Manager manager, ProgressKeeper progressKeeper){
         this.queue = q;
         this.targetFileName = fileName;
+        this.manager = manager;
+        this.progressKeeper = progressKeeper;
     }
 
 
@@ -42,10 +46,13 @@ public class Writer implements Runnable{
                     file.seek(dataChunk.getFirstByteIndex());
                     file.write(dataChunk.getData(), 0, dataChunk.getSize());
 
-                    //test
-                    System.out.println("data chunk was writen to file \n" +
-                                        "offset: " + dataChunk.getFirstByteIndex() + "\n" +
-                                        "size: " + dataChunk.getSize() + "\n");
+                    //TODO: update the progressKeeper
+                    progressKeeper.addSavedChunk(dataChunk.getFirstByteIndex());
+
+//                    //test
+//                    System.out.println("data chunk was writen to file \n" +
+//                                        "offset: " + dataChunk.getFirstByteIndex() + "\n" +
+//                                        "size: " + dataChunk.getSize() + "\n");
                 }
 
             } catch (InterruptedException e) {

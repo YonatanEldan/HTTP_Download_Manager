@@ -1,6 +1,6 @@
 package modules;
 
-import Constants.RuntimeMessages;
+import Constants.*;
 
 import java.io.IOException;
 
@@ -9,12 +9,17 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class Manager implements Runnable {
     String[] servers;
     int NUM_OF_WORKING_THREADS;
     long fileSize = 0;
-    private final int SIZE_OF_DATACHUNK = 4096;
+    String targetFilename;
+    private final int SIZE_OF_DATACHUNK = ConfigurationsSettings.SIZE_OF_DATACHUNK;
+    ProgressKeeper progressKeeper;
 
     // init blocking queue
     ArrayBlockingQueue<DataChunk> queue = new ArrayBlockingQueue<>(500);
@@ -24,12 +29,14 @@ public class Manager implements Runnable {
 
         // be default assign one worker per server.
         this.NUM_OF_WORKING_THREADS = maxThreadNum;
+
+        getFileInfo(this.servers[0]);
+
+        this.progressKeeper = new ProgressKeeper(targetFilename, fileSize);
     }
 
     @Override
     public void run() {
-
-        this.fileSize = getFileInfo(this.servers[0]);
 
         List<Thread> workerThreads = initWorkerThreads();
 
@@ -41,7 +48,7 @@ public class Manager implements Runnable {
 
 
         //init and start the writer.
-        Writer writer = new Writer(queue, "CentOS-6.10-x86_64-netinstall-downloaded.iso");
+        Writer writer = new Writer(queue, targetFilename, this, this.progressKeeper);
         Thread writerThread = new Thread(writer);
         writerThread.start();
         System.out.println("Started the writer thread");
@@ -62,7 +69,9 @@ public class Manager implements Runnable {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        finally {
+            progressKeeper.delete();
+        }
     }
 
     private List<Thread> initWorkerThreads() {
@@ -86,9 +95,9 @@ public class Manager implements Runnable {
 
                 if (workersCounter == this.NUM_OF_WORKING_THREADS) {
                     // this is the last worker
-                    worker = new Worker(currStart, this.fileSize - 1, servers[i], this.SIZE_OF_DATACHUNK, queue, this);
+                    worker = new Worker(currStart, this.fileSize - 1, servers[i], this.SIZE_OF_DATACHUNK, queue, this, this.progressKeeper);
                 } else {
-                    worker = new Worker(currStart, currStart + numOfBytesPerWorker, servers[i], 4096, queue, this);
+                    worker = new Worker(currStart, currStart + numOfBytesPerWorker, servers[i], 4096, queue, this, this.progressKeeper);
                 }
 
                 workerThreads.add(new Thread(worker));
@@ -107,17 +116,30 @@ public class Manager implements Runnable {
         }
     }
 
-    private long getFileInfo(String URL) {
+    //TODO: handle to case where you cant connect to the given server.
+    // maybe travers on all the servers list and break when you get the data.
+    private void getFileInfo(String URL) {
         try {
             URL url = new URL(URL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("HEAD");
-            return conn.getContentLengthLong();
+
+            this.fileSize = conn.getContentLengthLong();
+            // TODO: get the correct file name.
+//            this.targetFilename = extractFileName(this.servers[0]);
+            this.targetFilename = "CentOS-6.10-x86_64-netinstall-downloaded.iso";
 
         } catch (IOException e) {
             System.err.println(RuntimeMessages.SERVER_CONNECTION_FAILED);
         }
-        return -1;
+    }
+
+    private String extractFileName(String path){
+        Pattern p = Pattern.compile(".*/(.+\\..+)$");
+        Matcher m = p.matcher(path);
+
+        String name  = m.group(1);
+        return name;
     }
 
     private long calcNunOfChunksPerWorker(){
