@@ -21,10 +21,10 @@ public class Tests {
         //test the iso files
         String origin = "CentOS-6.10-x86_64-netinstall.iso";
         String downloaded = "CentOS-6.10-x86_64-netinstall-downloaded.iso";
-        compareFiles(downloaded, origin);
+        //compareFiles(downloaded, origin);
 
         // test the progressKeeper
-       // progressKeeperTest();
+        progressKeeperTest();
 
 
 
@@ -67,7 +67,7 @@ public class Tests {
 
         // create an instance that will be trashed at the end of the if statement.
         if(true) {
-            ProgressKeeper progressKeeper = new ProgressKeeper("test.txt", ConfigurationsSettings.SIZE_OF_DATACHUNK *300);
+            ProgressKeeper progressKeeper = new ProgressKeeper("test.txt", ConfigurationsSettings.SIZE_OF_DATACHUNK *100);
 
             // add chunks
             progressKeeper.addSavedChunk(1);
@@ -76,7 +76,7 @@ public class Tests {
         }
 
         // create it again and check if the values were saved
-        ProgressKeeper progressKeeper = new ProgressKeeper("test.txt", 10);
+        ProgressKeeper progressKeeper = new ProgressKeeper("test.txt", 100);
 
         System.out.println("is chunk 2 was saved already? " + progressKeeper.isChunkSaved(2));
         System.out.println("is chunk 10 was saved already? " + progressKeeper.isChunkSaved(10));

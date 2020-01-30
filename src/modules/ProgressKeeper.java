@@ -96,7 +96,7 @@ public class ProgressKeeper {
 
     public void addSavedChunk(long chunkId){
         savedChunks.add(chunkId);
-       // save();
+        save();
         printProgress();
     }
 

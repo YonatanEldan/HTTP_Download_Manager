@@ -125,7 +125,7 @@ public class Manager implements Runnable {
             conn.setRequestMethod("HEAD");
 
             this.fileSize = conn.getContentLengthLong();
-            // TODO: get the correct file name.
+            // TODO: get the correct file name...
 //            this.targetFilename = extractFileName(this.servers[0]);
             this.targetFilename = "CentOS-6.10-x86_64-netinstall-downloaded.iso";
 
