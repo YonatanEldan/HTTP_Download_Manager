@@ -9,12 +9,12 @@ public class Tests {
         //test the mario files
         String downLoadedFilePath = "Downloaded-Mario1_500.avi";
         String originFilePath = "Mario1_500.avi";
-        compareFiles(downLoadedFilePath, originFilePath);
+        //compareFiles(downLoadedFilePath, originFilePath);
 
         //test the iso files
         String origin = "CentOS-6.10-x86_64-netinstall.iso";
         String downloaded = "Downloaded-CentOS-6.10-x86_64-netinstall.iso";
-        //compareFiles(downloaded, origin);
+        compareFiles(downloaded, origin);
 
         // test the progressKeeper
         //progressKeeperTest();
@@ -39,11 +39,15 @@ public class Tests {
             }
 
             // compare
+            int tempCounter = 0;
             System.out.println("comparing files...");
             for (int i = 0; i < f1.length; i++) {
                 if(f1[i] != f2[i]){
+                    tempCounter++;
                     System.out.println("the bytes at index " + i + " are different !");
-                    return;
+                    System.out.println("ours is: " + f1[i] + "\n" +
+                                        "while origin is: " + f2[i]);
+                    if (tempCounter > 20) return;
                 }
             }
 
