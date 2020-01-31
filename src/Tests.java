@@ -1,10 +1,6 @@
 import java.io.*;
 import java.nio.file.*;
 
-import Constants.ConfigurationsSettings;
-import modules.ProgressKeeper;
-
-
 public class Tests {
 
     public static void main(String[] arg){

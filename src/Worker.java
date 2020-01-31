@@ -1,8 +1,3 @@
-package modules;
-
-import Constants.ConfigurationsSettings;
-import Constants.RuntimeMessages;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -13,13 +8,13 @@ public class Worker implements Runnable {
     private String url;
     private long firstByteIndex, curByteIndex,lastByteIndex;
     private int sizeOfChunk;
-    private ArrayBlockingQueue<modules.DataChunk> queue;
-    private modules.Manager manager;
-    modules.ProgressKeeper progressKeeper;
+    private ArrayBlockingQueue<DataChunk> queue;
+    private Manager manager;
+    ProgressKeeper progressKeeper;
 
     private InputStream inputStream;
 
-    public Worker(long firstByteIndex, long lastByteIndex, String url, int sizeOfChunk, ArrayBlockingQueue<modules.DataChunk> queue, modules.Manager manager, modules.ProgressKeeper progressKeeper){
+    public Worker(long firstByteIndex, long lastByteIndex, String url, int sizeOfChunk, ArrayBlockingQueue<DataChunk> queue, Manager manager, ProgressKeeper progressKeeper){
         this.firstByteIndex = firstByteIndex;
         this.curByteIndex = firstByteIndex;
         this.lastByteIndex = lastByteIndex;
@@ -61,12 +56,12 @@ public class Worker implements Runnable {
 
         // read chunks and write to queue
         try {
-            modules.DataChunk currDataChunk;
+            DataChunk currDataChunk;
             int bytesRead = 0;
             while (bytesRead != -1) {
                 bytesRead = 0;
 
-                currDataChunk = new modules.DataChunk(this.curByteIndex, this.sizeOfChunk);
+                currDataChunk = new DataChunk(this.curByteIndex, this.sizeOfChunk);
                //fill all the dataChunk (except maybe for the last chunk of the file).
                while(bytesRead < this.sizeOfChunk){
                    int temp = this.inputStream.read(currDataChunk.getData(), bytesRead, this.sizeOfChunk-bytesRead);
@@ -99,7 +94,7 @@ public class Worker implements Runnable {
         }
     }
 
-    private void writeToQueue(modules.DataChunk dataChunk){
+    private void writeToQueue(DataChunk dataChunk){
         try{
             this.queue.put(dataChunk);
           }catch (Exception e){
