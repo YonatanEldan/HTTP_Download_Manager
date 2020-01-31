@@ -6,8 +6,10 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) throws IOException {
+
         String[] servers = null;
-        int maxNumOfThreads = 0;
+        // We will define the maximum numer of threads to be the file size / 25000
+        int maxNumOfThreads = 4;
 
         if (isURL(args[0])) {
             servers = new String[]{args[0]};
@@ -41,8 +43,6 @@ public class Main {
                 //E.printStackTrace();
             }
         }
-
-        maxNumOfThreads = 4;
 
         //init manager
         Manager manager = new Manager(servers, maxNumOfThreads);
