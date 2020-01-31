@@ -1,6 +1,7 @@
 package modules;
 
-import Constants.*;
+import Constants.ConfigurationsSettings;
+import Constants.RuntimeMessages;
 
 import java.io.IOException;
 
@@ -18,10 +19,10 @@ public class Manager implements Runnable {
     long fileSize = 0;
     String targetFilename;
     private final int SIZE_OF_DATACHUNK = ConfigurationsSettings.SIZE_OF_DATACHUNK;
-    ProgressKeeper progressKeeper;
+    modules.ProgressKeeper progressKeeper;
 
     // init blocking queue
-    ArrayBlockingQueue<DataChunk> queue = new ArrayBlockingQueue<>(500);
+    ArrayBlockingQueue<modules.DataChunk> queue = new ArrayBlockingQueue<>(500);
 
     public Manager(String[] servers, int maxThreadNum) {
         this.servers = servers;
@@ -30,7 +31,7 @@ public class Manager implements Runnable {
         this.NUM_OF_WORKING_THREADS = maxThreadNum;
 
         getFileInfo(this.servers[0]);
-        this.progressKeeper = new ProgressKeeper(targetFilename, fileSize);
+        this.progressKeeper = new modules.ProgressKeeper(targetFilename, fileSize);
     }
 
     @Override
@@ -45,7 +46,7 @@ public class Manager implements Runnable {
 
 
         //init and start the writer.
-        Writer writer = new Writer(queue, targetFilename, this, this.progressKeeper);
+        modules.Writer writer = new modules.Writer(queue, targetFilename, this, this.progressKeeper);
         Thread writerThread = new Thread(writer);
         writerThread.start();
 
@@ -59,7 +60,7 @@ public class Manager implements Runnable {
 
             //insert dummy:
             // when finished, put a dummy chunk in the queue.
-            writeToQueue(new DataChunk(-1, 0));
+            writeToQueue(new modules.DataChunk(-1, 0));
 
             writerThread.join();
         } catch (InterruptedException e) {
@@ -86,14 +87,14 @@ public class Manager implements Runnable {
         int workersCounter = 0;
         for (int i = 0; i < servers.length; i++) {
             for (int j = 0; j < numOfConnections[i]; j++) {
-                Worker worker;
+                modules.Worker worker;
                 workersCounter++;
 
                 if (workersCounter == this.NUM_OF_WORKING_THREADS) {
                     // this is the last worker
-                    worker = new Worker(currStart, this.fileSize - 1, servers[i], this.SIZE_OF_DATACHUNK, queue, this, this.progressKeeper);
+                    worker = new modules.Worker(currStart, this.fileSize - 1, servers[i], this.SIZE_OF_DATACHUNK, queue, this, this.progressKeeper);
                 } else {
-                    worker = new Worker(currStart, currStart + numOfBytesPerWorker, servers[i], this.SIZE_OF_DATACHUNK, queue, this, this.progressKeeper);
+                    worker = new modules.Worker(currStart, currStart + numOfBytesPerWorker, servers[i], this.SIZE_OF_DATACHUNK, queue, this, this.progressKeeper);
                 }
 
                 workerThreads.add(new Thread(worker));
@@ -104,7 +105,7 @@ public class Manager implements Runnable {
         return workerThreads;
     }
 
-    private void writeToQueue(DataChunk dataChunk) {
+    private void writeToQueue(modules.DataChunk dataChunk) {
         try {
             this.queue.put(dataChunk);
         } catch (Exception e) {

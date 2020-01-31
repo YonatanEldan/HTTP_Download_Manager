@@ -1,12 +1,8 @@
 import java.io.*;
 import java.nio.file.*;
-import java.util.Arrays;
 
-import modules.*;
-
-import Constants.*;
-
-import javax.print.DocFlavor;
+import Constants.ConfigurationsSettings;
+import modules.ProgressKeeper;
 
 
 public class Tests {

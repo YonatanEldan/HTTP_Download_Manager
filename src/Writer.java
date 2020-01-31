@@ -1,23 +1,23 @@
 package modules;
 
-import Constants.*;
+import Constants.ConfigurationsSettings;
+import Constants.RuntimeMessages;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class Writer implements Runnable{
-    Manager manager;
-    ProgressKeeper progressKeeper;
-    ArrayBlockingQueue<DataChunk> queue;
+    modules.Manager manager;
+    modules.ProgressKeeper progressKeeper;
+    ArrayBlockingQueue<modules.DataChunk> queue;
     RandomAccessFile file;
     String targetFileName;
     boolean active = true;
 
-    public Writer(ArrayBlockingQueue q, String fileName, Manager manager, ProgressKeeper progressKeeper){
+    public Writer(ArrayBlockingQueue q, String fileName, modules.Manager manager, modules.ProgressKeeper progressKeeper){
         this.queue = q;
         this.targetFileName = fileName;
         this.manager = manager;
@@ -37,7 +37,7 @@ public class Writer implements Runnable{
         while(active){
             try {
                 // get the dataChunk from the queue
-                DataChunk dataChunk = queue.poll(ConfigurationsSettings.TIMEOUT_FOR_WRITER, TimeUnit.MILLISECONDS);
+                modules.DataChunk dataChunk = queue.poll(ConfigurationsSettings.TIMEOUT_FOR_WRITER, TimeUnit.MILLISECONDS);
                 // detect the dummy node
                 if(dataChunk == null || dataChunk.getFirstByteIndex() == -1){
                     finish();
