@@ -10,12 +10,13 @@ public class Main {
         String[] servers = null;
         // We will define the maximum numer of threads to be the file size / 25000
         int maxNumOfThreads = 4;
-
-        if (isURL(args[0])) {
-            servers = new String[]{args[0]};
+        String str = args[0].replaceAll("\\s+","");
+        if (isURL(str)) {
+            System.out.println(str);
+            servers = new String[]{str};
 
         } else {
-            List<String> itemsSchool = new ArrayList<String>();
+            List<String> URLlist = new ArrayList<String>();
 
             try {
                 FileInputStream fstream_school = new FileInputStream(args[0]);
@@ -26,12 +27,12 @@ public class Main {
                 while ((str_line = buffer.readLine()) != null) {
                     str_line = str_line.trim();
                     if ((str_line.length() != 0)) {
-                        itemsSchool.add(str_line);
+                        URLlist.add(str_line);
 
                     }
                 }
 
-                servers = itemsSchool.toArray(new String[itemsSchool.size()]);
+                servers = URLlist.toArray(new String[URLlist.size()]);
                 if(args.length==2) {
                     maxNumOfThreads = Integer.parseInt(args[1]);
                     System.out.println("Downloading using " + maxNumOfThreads + " connections...");
@@ -64,7 +65,6 @@ public class Main {
 
     public static boolean isURL(String url){
         try {
-            url.replaceAll("\\s+","");
             new URL(url);
             return true;
         } catch (Exception e){
