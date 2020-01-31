@@ -1,12 +1,5 @@
 import java.io.*;
 import java.nio.file.*;
-import java.util.Arrays;
-
-import modules.*;
-
-import Constants.*;
-
-import javax.print.DocFlavor;
 
 
 public class Tests {
@@ -16,12 +9,12 @@ public class Tests {
         //test the mario files
         String downLoadedFilePath = "Downloaded-Mario1_500.avi";
         String originFilePath = "Mario1_500.avi";
-        //compareFiles(downLoadedFilePath, originFilePath);
+        compareFiles(downLoadedFilePath, originFilePath);
 
         //test the iso files
         String origin = "CentOS-6.10-x86_64-netinstall.iso";
         String downloaded = "Downloaded-CentOS-6.10-x86_64-netinstall.iso";
-        compareFiles(downloaded, origin);
+        //compareFiles(downloaded, origin);
 
         // test the progressKeeper
         //progressKeeperTest();
@@ -70,16 +63,16 @@ public class Tests {
             ProgressKeeper progressKeeper = new ProgressKeeper("test.txt", ConfigurationsSettings.SIZE_OF_DATACHUNK *100);
 
             // add chunks
-            progressKeeper.addSavedChunk(1);
-            progressKeeper.addSavedChunk(2);
-            progressKeeper.addSavedChunk(3);
+            progressKeeper.addSavedChunk(0);
+            progressKeeper.addSavedChunk(1 * ConfigurationsSettings.SIZE_OF_DATACHUNK);
+            progressKeeper.addSavedChunk(2 * ConfigurationsSettings.SIZE_OF_DATACHUNK);
         }
 
         // create it again and check if the values were saved
-        ProgressKeeper progressKeeper = new ProgressKeeper("test.txt", 100);
+        ProgressKeeper progressKeeper = new ProgressKeeper("test.txt", ConfigurationsSettings.SIZE_OF_DATACHUNK *100);
 
-        System.out.println("is chunk 2 was saved already? " + progressKeeper.isChunkSaved(2));
-        System.out.println("is chunk 10 was saved already? " + progressKeeper.isChunkSaved(10));
+        System.out.println("is chunk 2 was saved already? " + progressKeeper.isChunkSaved(1 * ConfigurationsSettings.SIZE_OF_DATACHUNK));
+        System.out.println("is chunk 10 was saved already? " + progressKeeper.isChunkSaved(10 * ConfigurationsSettings.SIZE_OF_DATACHUNK));
         System.out.println();
 
         System.out.println(progressKeeper);

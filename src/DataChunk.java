@@ -1,5 +1,3 @@
-package modules;
-
 public class DataChunk{
 
     private long firstByteIndex;

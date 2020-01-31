@@ -1,7 +1,3 @@
-package modules;
-
-import Constants.*;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;

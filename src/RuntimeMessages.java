@@ -1,5 +1,3 @@
-package Constants;
-
 public class RuntimeMessages {
 
     // worker

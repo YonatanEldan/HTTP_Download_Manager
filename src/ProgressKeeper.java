@@ -1,14 +1,12 @@
-package modules;
-
-import Constants.ConfigurationsSettings;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 
 public class ProgressKeeper {
-    private HashSet<Long> savedChunks;
+    //private HashSet<Long> savedChunks;
+    private boolean[] savedChunksArray;
+    private int numOfSavedChunks = 0;
     private String targetFileName;
 
     private File mapMetaDataFile = new File("mapMetaD.ser");
@@ -28,7 +26,8 @@ public class ProgressKeeper {
 
         // if the both the target file and the meta datafile are already exists, init form file.
         if(isInProgress()) {
-            savedChunks = (HashSet) readMetaDataFile(mapMetaDataFile);
+            savedChunksArray = (boolean[]) readMetaDataFile(mapMetaDataFile);
+            retrieveNumOfSavedChunks();
         }
         else{
             try {
@@ -41,8 +40,8 @@ public class ProgressKeeper {
                 e.printStackTrace();
             }
 
-            this.savedChunks = new HashSet<>();
-            writeMetaDataFile(mapMetaDataFile, temp1MetaDataFile, savedChunks);
+            this.savedChunksArray = new boolean[(int) (targetFileSize / SIZE_OF_DATACHUNK) + 1];
+            writeMetaDataFile(mapMetaDataFile, temp1MetaDataFile, savedChunksArray);
             writeMetaDataFile(fileNameMetaDataFile, temp2MetaDataFile, targetFileName);
 
         }
@@ -60,7 +59,7 @@ public class ProgressKeeper {
     }
 
     private void save(){
-        writeMetaDataFile(mapMetaDataFile, temp1MetaDataFile, savedChunks);
+        writeMetaDataFile(mapMetaDataFile, temp1MetaDataFile, savedChunksArray);
     }
 
     private void writeMetaDataFile(File metaDataFile, File tempMetaDataFile, Object obj){
@@ -106,17 +105,20 @@ public class ProgressKeeper {
         this.fileNameMetaDataFile.delete();
     }
 
-    public void addSavedChunk(long chunkId){
-        savedChunks.add(chunkId);
+    public void addSavedChunk(long chunkFirstByte){
+        int index = (int) (chunkFirstByte/SIZE_OF_DATACHUNK);
+        savedChunksArray[index] = true;
+        numOfSavedChunks++;
         printProgress();
     }
 
-    public boolean isChunkSaved(long chunkId){
-        return savedChunks.contains(chunkId);
+    public boolean isChunkSaved(long chunkFirstByte){
+        int index = (int) (chunkFirstByte / SIZE_OF_DATACHUNK);
+        return savedChunksArray[index];
     }
 
     private int calcProgress(){
-        double downloaded = (double) (savedChunks.size() * SIZE_OF_DATACHUNK) / targetFileSize;
+        double downloaded = (double) (numOfSavedChunks * SIZE_OF_DATACHUNK) / targetFileSize;
         return (int) (downloaded * 100);
     }
 
@@ -125,7 +127,7 @@ public class ProgressKeeper {
         if (currProgress < progress){
             save();
             currProgress = progress;
-            System.out.println("Downloaded " + (currProgress) + "%");
+            System.out.println("Downloaded " + currProgress + "% ...");
         }
     }
 
@@ -133,7 +135,24 @@ public class ProgressKeeper {
     @Override
     public String toString() {
         return "ProgressKeeper{\n" +
-                "savedChunks=" + savedChunks +
+                "savedChunksArray=" + arrayPrint(savedChunksArray) +
                 "\n}";
+    }
+
+    private String arrayPrint(boolean[] arr){
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < arr.length ; i++) {
+            sb.append(arr[i]);
+        }
+        return sb.toString();
+    }
+
+    private void retrieveNumOfSavedChunks(){
+        numOfSavedChunks = 0;
+        for (int i = 0; i < savedChunksArray.length ; i++) {
+            if(!savedChunksArray[i]) return;
+            numOfSavedChunks++;
+        }
     }
 }
