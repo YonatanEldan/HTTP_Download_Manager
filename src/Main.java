@@ -10,6 +10,7 @@ public class Main {
         String[] servers = null;
         // We will define the maximum numer of threads to be the file size / 25000
         int maxNumOfThreads = 4;
+        // To avoid spaces in the beginning of the url
         String str = args[0].replaceAll("\\s+","");
         if (isURL(str)) {
             System.out.println(str);
