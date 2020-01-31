@@ -127,7 +127,7 @@ public class ProgressKeeper {
         if (currProgress < progress){
             save();
             currProgress = progress;
-            System.out.println("Downloaded " + currProgress + "% ...");
+            System.out.println("Downloaded " + currProgress + "%");
         }
     }
 
@@ -151,8 +151,7 @@ public class ProgressKeeper {
     private void retrieveNumOfSavedChunks(){
         numOfSavedChunks = 0;
         for (int i = 0; i < savedChunksArray.length ; i++) {
-            if(!savedChunksArray[i]) return;
-            numOfSavedChunks++;
+            if(savedChunksArray[i]) numOfSavedChunks++;
         }
     }
 }
