@@ -3,7 +3,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class Writer implements Runnable{
     Manager manager;
