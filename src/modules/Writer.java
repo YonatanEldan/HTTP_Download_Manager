@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public class Writer implements Runnable{
     Manager manager;
@@ -35,8 +37,7 @@ public class Writer implements Runnable{
         while(active){
             try {
                 // get the dataChunk from the queue
-                DataChunk dataChunk = queue.take();
-
+                DataChunk dataChunk = queue.poll(ConfigurationsSettings.TIMEOUT_FOR_WRITER, TimeUnit.MILLISECONDS);
                 // detect the dummy node
                 if(dataChunk.getFirstByteIndex() == -1){
                     finish();
