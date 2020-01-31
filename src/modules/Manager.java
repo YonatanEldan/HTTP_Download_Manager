@@ -31,7 +31,7 @@ public class Manager implements Runnable {
         this.NUM_OF_WORKING_THREADS = maxThreadNum;
 
         getFileInfo(this.servers[0]);
-
+        System.out.println(this.targetFilename);
         this.progressKeeper = new ProgressKeeper(targetFilename, fileSize);
     }
 
@@ -97,7 +97,7 @@ public class Manager implements Runnable {
                     // this is the last worker
                     worker = new Worker(currStart, this.fileSize - 1, servers[i], this.SIZE_OF_DATACHUNK, queue, this, this.progressKeeper);
                 } else {
-                    worker = new Worker(currStart, currStart + numOfBytesPerWorker, servers[i], 4096, queue, this, this.progressKeeper);
+                    worker = new Worker(currStart, currStart + numOfBytesPerWorker, servers[i], this.SIZE_OF_DATACHUNK, queue, this, this.progressKeeper);
                 }
 
                 workerThreads.add(new Thread(worker));
@@ -126,21 +126,13 @@ public class Manager implements Runnable {
 
             this.fileSize = conn.getContentLengthLong();
             // TODO: get the correct file name...
-//            this.targetFilename = extractFileName(this.servers[0]);
-            this.targetFilename = "CentOS-6.10-x86_64-netinstall-downloaded.iso";
+            this.targetFilename = "Downloaded-" + URL.substring(URL.lastIndexOf('/')+1, URL.length() );;
 
         } catch (IOException e) {
             System.err.println(RuntimeMessages.SERVER_CONNECTION_FAILED);
         }
     }
 
-    private String extractFileName(String path){
-        Pattern p = Pattern.compile(".*/(.+\\..+)$");
-        Matcher m = p.matcher(path);
-
-        String name  = m.group(1);
-        return name;
-    }
 
     private long calcNunOfChunksPerWorker(){
         long totalDataChunksNum = this.fileSize / this.SIZE_OF_DATACHUNK ;
@@ -150,3 +142,4 @@ public class Manager implements Runnable {
     }
 
 }
+

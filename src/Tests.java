@@ -14,17 +14,17 @@ public class Tests {
     public static void main(String[] arg){
 
         //test the mario files
-        String downLoadedFilePath = "downloadedMario.avi";
+        String downLoadedFilePath = "Downloaded-Mario1_500.avi";
         String originFilePath = "Mario1_500.avi";
-        compareFiles(downLoadedFilePath, originFilePath);
+        //compareFiles(downLoadedFilePath, originFilePath);
 
         //test the iso files
         String origin = "CentOS-6.10-x86_64-netinstall.iso";
-        String downloaded = "CentOS-6.10-x86_64-netinstall-downloaded.iso";
-        //compareFiles(downloaded, origin);
+        String downloaded = "Downloaded-CentOS-6.10-x86_64-netinstall.iso";
+        compareFiles(downloaded, origin);
 
         // test the progressKeeper
-      //  progressKeeperTest();
+        //progressKeeperTest();
 
 
 

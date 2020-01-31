@@ -108,7 +108,7 @@ public class ProgressKeeper {
 
     public void addSavedChunk(long chunkId){
         savedChunks.add(chunkId);
-        save();
+        //save();
         printProgress();
     }
 
@@ -124,6 +124,7 @@ public class ProgressKeeper {
     private void printProgress(){
         int progress = calcProgress();
         if (currProgress < progress){
+            save();
             currProgress = progress;
             System.out.println("Downloaded " + currProgress + "% ...");
         }
