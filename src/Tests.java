@@ -9,12 +9,12 @@ public class Tests {
         //test the mario files
         String downLoadedFilePath = "Downloaded-Mario1_500.avi";
         String originFilePath = "Mario1_500.avi";
-        compareFiles(downLoadedFilePath, originFilePath);
+        //compareFiles(downLoadedFilePath, originFilePath);
 
         //test the iso files
         String origin = "CentOS-6.10-x86_64-netinstall.iso";
         String downloaded = "Downloaded-CentOS-6.10-x86_64-netinstall.iso";
-        //compareFiles(downloaded, origin);
+        compareFiles(downloaded, origin);
 
         // test the progressKeeper
         //progressKeeperTest();

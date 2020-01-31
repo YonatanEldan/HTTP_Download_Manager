@@ -58,9 +58,12 @@ public class Worker implements Runnable {
         try {
             DataChunk currDataChunk;
             int bytesRead = 0;
-            while (bytesRead != -1) {
+            while (bytesRead != -1 && this.curByteIndex < this.lastByteIndex) {
                 bytesRead = 0;
-
+                if(progressKeeper.isChunkSaved(this.curByteIndex)){
+                    this.curByteIndex += this.sizeOfChunk;
+                    continue;
+                }
                 currDataChunk = new DataChunk(this.curByteIndex, this.sizeOfChunk);
                //fill all the dataChunk (except maybe for the last chunk of the file).
                while(bytesRead < this.sizeOfChunk){
