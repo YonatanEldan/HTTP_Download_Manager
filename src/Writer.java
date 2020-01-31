@@ -42,7 +42,7 @@ public class Writer implements Runnable{
                     file.seek(dataChunk.getFirstByteIndex());
                     file.write(dataChunk.getData(), 0, dataChunk.getSize());
 
-                    //TODO: update the progressKeeper
+                    //TODO: update the metadata
                     progressKeeper.addSavedChunk(dataChunk.getFirstByteIndex());
 
 //                    //test
