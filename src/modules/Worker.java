@@ -35,7 +35,7 @@ public class Worker implements Runnable {
     public void run() {
 
         // TODO: check if the chunk is already written to the file.
-
+        System.out.println("Start downloading range (" + this.firstByteIndex + " - " + this.lastByteIndex +") from:\n" + this.url);
         //increase the curr byte as long as its corresponding chunk has been saved already.
         while(progressKeeper.isChunkSaved(this.curByteIndex)){
             this.curByteIndex += this.sizeOfChunk;
@@ -89,6 +89,7 @@ public class Worker implements Runnable {
         }
 
         finally {
+            System.out.println("Finished downloading");
             try {
                 this.inputStream.close();
             }catch(IOException e){

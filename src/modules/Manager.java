@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 
 public class Manager implements Runnable {
@@ -31,7 +30,6 @@ public class Manager implements Runnable {
         this.NUM_OF_WORKING_THREADS = maxThreadNum;
 
         getFileInfo(this.servers[0]);
-        System.out.println(this.targetFilename);
         this.progressKeeper = new ProgressKeeper(targetFilename, fileSize);
     }
 
@@ -44,14 +42,12 @@ public class Manager implements Runnable {
         for (Thread thread : workerThreads) {
             thread.start();
         }
-        System.out.println("Started the workers threads");
 
 
         //init and start the writer.
         Writer writer = new Writer(queue, targetFilename, this, this.progressKeeper);
         Thread writerThread = new Thread(writer);
         writerThread.start();
-        System.out.println("Started the writer thread");
 
 
         try {

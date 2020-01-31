@@ -15,7 +15,8 @@ public class Main {
         int maxNumOfThreads = 0;
 
         if (isURL(args[0])) {
-            servers = new String[]{"https://archive.org/download/Mario1_500/Mario1_500.avi"}; // testing:  change it later !!!!!!!
+            servers = new String[]{args[0]};
+
         } else {
             List<String> itemsSchool = new ArrayList<String>();
 
@@ -29,23 +30,31 @@ public class Main {
                     str_line = str_line.trim();
                     if ((str_line.length() != 0)) {
                         itemsSchool.add(str_line);
+
                     }
                 }
 
                 servers = itemsSchool.toArray(new String[itemsSchool.size()]);
+                if(args.length==2) {
+                    maxNumOfThreads = Integer.parseInt(args[1]);
+                    System.out.println("Downloading using " + maxNumOfThreads + " connections...");
+                }
+                else{
+                    System.out.println("Downloading...");
+                }
             } catch (Exception E) {
-                E.printStackTrace();
+                //E.printStackTrace();
             }
         }
 
-        maxNumOfThreads = 2;
+        maxNumOfThreads = 4;
 
         //init manager
         Manager manager = new Manager(servers, maxNumOfThreads);
         manager.run();
 
 
-        System.out.println("Download finished !");
+        System.out.println("Download succeeded");
 
         // run the tests and delete the new file
         Tests.main(new String[]{});
@@ -60,6 +69,7 @@ public class Main {
 
     public static boolean isURL(String url){
         try {
+            url.replaceAll("\\s+","");
             new URL(url);
             return true;
         } catch (Exception e){

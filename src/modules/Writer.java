@@ -39,7 +39,7 @@ public class Writer implements Runnable{
                 // get the dataChunk from the queue
                 DataChunk dataChunk = queue.poll(ConfigurationsSettings.TIMEOUT_FOR_WRITER, TimeUnit.MILLISECONDS);
                 // detect the dummy node
-                if(dataChunk.getFirstByteIndex() == -1){
+                if(dataChunk == null || dataChunk.getFirstByteIndex() == -1){
                     finish();
                 }
                 else {

@@ -125,7 +125,7 @@ public class ProgressKeeper {
         if (currProgress < progress){
             save();
             currProgress = progress;
-            System.out.println("Downloaded " + currProgress + "% ...");
+            System.out.println("Downloaded " + (currProgress) + "%");
         }
     }
 
