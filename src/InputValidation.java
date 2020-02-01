@@ -11,8 +11,7 @@ public  class InputValidation{
     String[] servers = null;
     // To avoid spaces in the beggining of the url
     String str = input.replaceAll(" ","");
-    //String str = new String(args[0]);
-        if (isURL(input)) {
+        if (isURL(str)) {
         servers = new String[1];
         servers[0] = str;
 
