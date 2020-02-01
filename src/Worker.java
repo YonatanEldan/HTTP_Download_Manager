@@ -32,11 +32,6 @@ public class Worker implements Runnable {
 
         // TODO: check if the chunk is already written to the file.
         System.out.println("Start downloading range (" + this.firstByteIndex + " - " + this.lastByteIndex +") from:\n" + this.url);
-//        //increase the curr byte as long as its corresponding chunk has been saved already.
-//        while(progressKeeper.isChunkSaved(this.curByteIndex)){
-//            this.curByteIndex += this.sizeOfChunk;
-//        }
-//        if (lastByteIndex < curByteIndex) return;
 
         //connect to server
         try {
@@ -49,7 +44,7 @@ public class Worker implements Runnable {
             this.inputStream = connection.getInputStream();
 
         } catch(IOException e){
-            System.err.println(RuntimeMessages.SERVER_CONNECTION_FAILED + ":" + "\n " +
+            manager.programShutDown(RuntimeMessages.SERVER_CONNECTION_FAILED + ":" + "\n " +
                                 "server name: " + this.url + "\n" +
                                 "cause: " + e.getMessage());
         }
@@ -85,7 +80,7 @@ public class Worker implements Runnable {
             }
 
         }catch (IOException e){
-            System.err.println(RuntimeMessages.FAILED_TO_FETCH_DATA_FROM_SERVER);
+            manager.programShutDown(RuntimeMessages.FAILED_TO_FETCH_DATA_FROM_SERVER);
         }
 
         finally {
@@ -93,7 +88,7 @@ public class Worker implements Runnable {
             try {
                 this.inputStream.close();
             }catch(IOException e){
-                System.err.println(RuntimeMessages.INPUTSTREAM_CLOSE_EXEPTION);
+               //ignore
             }
         }
     }
@@ -102,7 +97,7 @@ public class Worker implements Runnable {
         try{
             this.queue.put(dataChunk);
           }catch (Exception e){
-            System.err.println(RuntimeMessages.FAILED_TO_INSERT_INTO_THE_QUEUE);
+            manager.programShutDown(RuntimeMessages.FAILED_TO_SAVE_DATA);
         }
     }
 }

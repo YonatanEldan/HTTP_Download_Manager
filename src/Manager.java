@@ -137,5 +137,9 @@ public class Manager {
         return  totalDataChunksNum / this.NUM_OF_WORKING_THREADS;
     }
 
+    public void programShutDown(String msg){
+        System.err.println(msg);
+        System.exit(1);
+    }
 }
 

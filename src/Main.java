@@ -49,7 +49,7 @@ public class Main {
         }
 
         //init manager
-        //servers = new String[]{"https://archive.org/download/Mario1_500/Mario1_500.avi"};
+        servers = new String[]{"https://archive.org/download/Mario1_500/Mario1_500.avi"};
         Manager manager = new Manager(servers, Integer.parseInt(args[1]));
         String resultMessage = manager.execute();
 
