@@ -111,8 +111,7 @@ public class Manager {
             this.queue.put(dataChunk);
         }
 
-    //TODO: handle to case where you cant connect to the given server.
-    // maybe travers on all the servers list and break when you get the data.
+    // maybe traverse on all the servers list and break when you get the data.
     private void getFileInfo(String URL) {
         try {
             URL url = new URL(URL);
