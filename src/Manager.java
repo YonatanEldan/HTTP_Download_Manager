@@ -8,7 +8,8 @@ import java.net.URL;
 
 
 
-public class Manager implements Runnable {
+public class Manager {
+
     String[] servers;
     int NUM_OF_WORKING_THREADS;
     long fileSize = 0;
@@ -29,8 +30,7 @@ public class Manager implements Runnable {
         this.progressKeeper = new ProgressKeeper(targetFilename, fileSize);
     }
 
-    @Override
-    public void run() {
+    public String execute() {
 
         List<Thread> workerThreads = initWorkerThreads();
 
@@ -59,11 +59,12 @@ public class Manager implements Runnable {
 
             writerThread.join();
         } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        finally {
             progressKeeper.delete();
+            return RuntimeMessages.THE_PROGRAM_SHUT_DOWN;
         }
+
+        progressKeeper.delete();
+        return RuntimeMessages.DOWNLOAD_SUCCEEDED;
     }
 
     private List<Thread> initWorkerThreads() {

@@ -47,20 +47,16 @@ public class Main {
         }
 
         //init manager
-        Manager manager = new Manager(servers, maxNumOfThreads);
-        manager.run();
+        servers = new String[]{"https://archive.org/download/Mario1_500/Mario1_500.avi"};
+        Manager manager = new Manager(servers, Integer.parseInt(args[1]));
+        String resultMessage = manager.execute();
 
+        System.out.println(resultMessage);
 
-        System.out.println("Download succeeded");
 
         // run the tests and delete the new file
         Tests.main(new String[]{});
         System.out.println("deleting the new file and exit the program...");
-//        File res = new File("CentOS-6.10-x86_64-netinstall-downloaded.iso");
-//        res.delete();
-//
-//        File res2 = new File("downloadedMario.avi");
-//        res2.delete();
 
     }
 
