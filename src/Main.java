@@ -6,51 +6,15 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-
-        String[] servers = null;
-        // We will define the maximum numer of threads to be the file size / 25000
-        int maxNumOfThreads = 4;
-        // To avoid spaces in the beggining of the url
-        String str = args[0].replaceAll(" ","");
-        //String str = new String(args[0]);
-        if (isURL(args[0])) {
-            System.out.println(args[0]);
-            servers = new String[]{str};
-            System.out.println(servers[0]);
-
-        } else {
-            List<String> URLlist = new ArrayList<String>();
-
-            try {
-                FileInputStream fstream_school = new FileInputStream(args[0]);
-                DataInputStream data_input = new DataInputStream(fstream_school);
-                BufferedReader buffer = new BufferedReader(new InputStreamReader(data_input));
-                String str_line;
-
-                while ((str_line = buffer.readLine()) != null) {
-                    str_line = str_line.trim();
-                    if ((str_line.length() != 0)) {
-                        URLlist.add(str_line);
-
-                    }
-                }
-
-                servers = URLlist.toArray(new String[URLlist.size()]);
-            } catch (Exception E) {
-                //E.printStackTrace();
-            }
-        }
+        // In case we don't get an input for maxnumthreads
+        int maxNumOfThreads = 1;
         if(args.length==2) {
             maxNumOfThreads = Integer.parseInt(args[1]);
-            System.out.println("Downloading using " + maxNumOfThreads + " connections...");
         }
-        else{
-            System.out.println("Downloading...");
-        }
-
+        //
+        String[] servers = InputValidation.validate(args[0]);
         //init manager
-        servers = new String[]{"https://archive.org/download/Mario1_500/Mario1_500.avi"};
-        Manager manager = new Manager(servers, Integer.parseInt(args[1]));
+        Manager manager = new Manager(servers, maxNumOfThreads);
         String resultMessage = manager.execute();
 
         System.out.println(resultMessage);
@@ -62,13 +26,4 @@ public class Main {
 
     }
 
-    public static boolean isURL(String url){
-        try {
-            new URL(url);
-            return true;
-        } catch (Exception e){
-            return false;
-        }
-
-    }
 }
