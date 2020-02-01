@@ -16,7 +16,16 @@ public class RuntimeMessages {
 
     // writer
     public static final String FAILED_TO_TAKE_DATA_FROM_THE_QUEUE = "Failed take data from the queue";
-    public static final String FAILED_WHEN_WRITING_TO_FILE = "Failed take data from the queue";
+    public static final String FAILED_WHEN_WRITING_TO_FILE = "Failed to write the file. \n" +
+                                                                "Please restart the program to try again";
+
+    //progressKeeper
+    public static final String FAILED_INIT_META_DATA_FILES = "Failed to create the meta data files.\n" +
+                                                            "If you want to be able to pause and resume your download, please restart the program.";
+    public static final String COULD_NOT_READ_MATA_DATA = "could not read the meta data file. Restarting the download...";
+
+
+
 
 
 }
