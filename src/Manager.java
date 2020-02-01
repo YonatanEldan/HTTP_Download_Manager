@@ -111,7 +111,6 @@ public class Manager {
             this.queue.put(dataChunk);
         }
 
-
     //TODO: handle to case where you cant connect to the given server.
     // maybe travers on all the servers list and break when you get the data.
     private void getFileInfo(String URL) {
@@ -121,10 +120,15 @@ public class Manager {
             conn.setRequestMethod("HEAD");
 
             this.fileSize = conn.getContentLengthLong();
-            //this.NUM_OF_WORKING_THREADS=
-            // TODO: get the correct file name...
-            this.targetFilename = "Downloaded-" + URL.substring(URL.lastIndexOf('/')+1, URL.length() );;
-
+            int ThreadsUpperBound = (int)((this.fileSize) / ConfigurationsSettings.THREADS_SIZE_RATIO);
+            if (this.NUM_OF_WORKING_THREADS > ThreadsUpperBound) {
+                // We won't use more then 20 threads reagrless of the file size
+                this.NUM_OF_WORKING_THREADS = Math.min(20, ThreadsUpperBound);
+            }
+            this.targetFilename = "Downloaded-" + URL.substring(URL.lastIndexOf('/')+1, URL.length() );
+            // For printing purposes
+            if(this.NUM_OF_WORKING_THREADS  > 1 ) System.out.println("Downloading using " + this.NUM_OF_WORKING_THREADS + " connections...");
+            else System.out.println("Downloading...");
         } catch (IOException e) {
             System.err.println(RuntimeMessages.SERVER_CONNECTION_FAILED);
         }
