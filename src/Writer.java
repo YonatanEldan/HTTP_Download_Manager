@@ -52,7 +52,6 @@ public class Writer implements Runnable{
             }
         }
 
-
         try {
             this.file.close();
         } catch (IOException e) {

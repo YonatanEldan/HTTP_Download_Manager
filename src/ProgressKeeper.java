@@ -4,7 +4,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashSet;
 
 public class ProgressKeeper {
-    //private HashSet<Long> savedChunks;
     private boolean[] savedChunksArray;
     private int numOfSavedChunks = 0;
     private String targetFileName;

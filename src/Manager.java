@@ -18,7 +18,7 @@ public class Manager {
     ProgressKeeper progressKeeper;
 
     // init blocking queue
-    ArrayBlockingQueue<DataChunk> queue = new ArrayBlockingQueue<>(500);
+    ArrayBlockingQueue<DataChunk> queue = new ArrayBlockingQueue<>(ConfigurationsSettings.CHUNKS_QUEUE_CAPACITY);
 
     public Manager(String[] servers, int maxThreadNum) {
         this.servers = servers;
@@ -37,7 +37,6 @@ public class Manager {
             return RuntimeMessages.SERVER_CONNECTION_FAILED;
         }
 
-
         List<Thread> workerThreads = initWorkerThreads();
 
         //start the workers
@@ -45,15 +44,12 @@ public class Manager {
             thread.start();
         }
 
-
         //init and start the writer.
         Writer writer = new Writer(queue, targetFilename, this, this.progressKeeper);
         Thread writerThread = new Thread(writer);
         writerThread.start();
 
-
         try {
-
             //join the workers
             for (Thread thread : workerThreads) {
                 thread.join();
@@ -122,8 +118,8 @@ public class Manager {
             this.fileSize = conn.getContentLengthLong();
             int ThreadsUpperBound = (int)((this.fileSize) / ConfigurationsSettings.THREADS_SIZE_RATIO);
             if (this.NUM_OF_WORKING_THREADS > ThreadsUpperBound) {
-                // We won't use more then 20 threads reagrless of the file size
-                this.NUM_OF_WORKING_THREADS = Math.min(20, ThreadsUpperBound);
+                // We won't use more then MAX_NUM_OF_THREADS threads regardless of the file size
+                this.NUM_OF_WORKING_THREADS = Math.min(ConfigurationsSettings.MAX_NUM_OF_THREADS, ThreadsUpperBound);
             }
             this.targetFilename = "Downloaded-" + URL.substring(URL.lastIndexOf('/')+1, URL.length() );
             // For printing purposes

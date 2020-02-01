@@ -39,7 +39,7 @@ public class Worker implements Runnable {
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Range", "bytes=" + this.curByteIndex + "-" + this.lastByteIndex);
-            //connection.setConnectTimeout(ConfigurationsSettings.TIMEOUT_FOR_WORKER);
+            connection.setConnectTimeout(ConfigurationsSettings.TIMEOUT_FOR_WORKER);
 
             this.inputStream = connection.getInputStream();
 
