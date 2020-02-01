@@ -118,6 +118,7 @@ public class Manager {
             conn.setRequestMethod("HEAD");
 
             this.fileSize = conn.getContentLengthLong();
+            //this.NUM_OF_WORKING_THREADS=
             // TODO: get the correct file name...
             this.targetFilename = "Downloaded-" + URL.substring(URL.lastIndexOf('/')+1, URL.length() );;
 

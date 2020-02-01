@@ -8,14 +8,15 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         String[] servers = null;
-        // We will define the maximum numer of threads to be the file size / 25000
-        int maxNumOfThreads = 4;
+        // In case we don't get an input for maxnumthreads
+        int maxNumOfThreads = 1;
         // To avoid spaces in the beggining of the url
         String str = args[0].replaceAll(" ","");
         //String str = new String(args[0]);
         if (isURL(args[0])) {
             System.out.println(args[0]);
-            servers = new String[]{str};
+            servers = new String[1];
+            servers[0] = str;
             System.out.println(servers[0]);
 
         } else {
@@ -49,8 +50,7 @@ public class Main {
         }
 
         //init manager
-        //servers = new String[]{"https://archive.org/download/Mario1_500/Mario1_500.avi"};
-        Manager manager = new Manager(servers, Integer.parseInt(args[1]));
+        Manager manager = new Manager(servers, maxNumOfThreads);
         String resultMessage = manager.execute();
 
         System.out.println(resultMessage);
