@@ -119,7 +119,7 @@ public class Manager {
                 // We won't use more then MAX_NUM_OF_THREADS threads regardless of the file size
                 this.NUM_OF_WORKING_THREADS = Math.min(ConfigurationsSettings.MAX_NUM_OF_THREADS, ThreadsUpperBound);
             }
-            this.targetFilename = "Downloaded-" + URL.substring(URL.lastIndexOf('/')+1, URL.length() );
+            this.targetFilename = URL.substring(URL.lastIndexOf('/')+1);
             // For printing purposes
             if(this.NUM_OF_WORKING_THREADS  > 1 ) System.out.println("Downloading using " + this.NUM_OF_WORKING_THREADS + " connections...");
             else System.out.println("Downloading...");

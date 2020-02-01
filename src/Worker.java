@@ -33,6 +33,12 @@ public class Worker implements Runnable {
         // TODO: check if the chunk is already written to the file.
         System.out.println("Start downloading range (" + this.firstByteIndex + " - " + this.lastByteIndex +") from:\n" + this.url);
 
+        //skip the first interval of bytes that were already read before sending the get request.
+        while(progressKeeper.isChunkSaved(this.curByteIndex)){
+            this.curByteIndex += this.sizeOfChunk;
+        }
+        if (this.lastByteIndex < this.curByteIndex) return;
+
         //connect to server
         try {
             URL url = new URL(this.url);

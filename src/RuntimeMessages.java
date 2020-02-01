@@ -3,7 +3,7 @@ public class RuntimeMessages {
     //manager
     public static final String THE_PROGRAM_SHUT_DOWN = "The program shut down unexpectedly.\n" +
                                                         "Launch it again to resume your download.";
-    public static final String DOWNLOAD_SUCCEEDED = "Failed Closing the connection with the server";
+    public static final String DOWNLOAD_SUCCEEDED = "Download succeeded";
 
     // worker
     public static final String INPUTSTREAM_CLOSE_EXEPTION = "Failed Closing the connection with the server";

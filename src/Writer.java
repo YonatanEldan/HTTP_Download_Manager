@@ -12,7 +12,7 @@ public class Writer implements Runnable{
     String targetFileName;
     boolean active = true;
 
-    public Writer(ArrayBlockingQueue q, String fileName, Manager manager, ProgressKeeper progressKeeper){
+    public Writer(ArrayBlockingQueue<DataChunk> q, String fileName, Manager manager, ProgressKeeper progressKeeper){
         this.queue = q;
         this.targetFileName = fileName;
         this.manager = manager;
