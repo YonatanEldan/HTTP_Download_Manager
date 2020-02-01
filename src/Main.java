@@ -11,12 +11,12 @@ public class Main {
         // We will define the maximum numer of threads to be the file size / 25000
         int maxNumOfThreads = 4;
         // To avoid spaces in the beggining of the url
-        //String str = args[0].replaceAll("\\s+","");
-        String str = new String(args[0]);
-        if (isURL(str)) {
-            System.out.println(str);
-            //servers = new String[]{"https://archive.org/download/Mario1_500/Mario1_500.avi​"};
-            System.out.println(str);
+        String str = args[0].replaceAll(" ","");
+        //String str = new String(args[0]);
+        if (isURL(args[0])) {
+            System.out.println(args[0]);
+            servers = new String[]{str};
+            System.out.println(servers[0]);
 
         } else {
             List<String> URLlist = new ArrayList<String>();
@@ -40,29 +40,25 @@ public class Main {
                 //E.printStackTrace();
             }
         }
-        if (args.length == 2) {
+        if(args.length==2) {
             maxNumOfThreads = Integer.parseInt(args[1]);
             System.out.println("Downloading using " + maxNumOfThreads + " connections...");
-        } else {
+        }
+        else{
             System.out.println("Downloading...");
         }
 
-        servers = new String[]{"https://archive.org/download/Mario1_500/Mario1_500.avi​"};
         //init manager
-        Manager manager = new Manager(servers, maxNumOfThreads);
-        manager.run();
+        //servers = new String[]{"https://archive.org/download/Mario1_500/Mario1_500.avi"};
+        Manager manager = new Manager(servers, Integer.parseInt(args[1]));
+        String resultMessage = manager.execute();
 
+        System.out.println(resultMessage);
 
-        System.out.println("Download succeeded");
 
         // run the tests and delete the new file
         Tests.main(new String[]{});
         System.out.println("deleting the new file and exit the program...");
-//        File res = new File("CentOS-6.10-x86_64-netinstall-downloaded.iso");
-//        res.delete();
-//
-//        File res2 = new File("downloadedMario.avi");
-//        res2.delete();
 
     }
 
