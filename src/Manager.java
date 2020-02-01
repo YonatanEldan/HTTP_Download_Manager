@@ -109,10 +109,8 @@ public class Manager {
 
     private void writeToQueue(DataChunk dataChunk) throws InterruptedException {
             this.queue.put(dataChunk);
-        } catch (Exception e) {
-            System.err.println(RuntimeMessages.FAILED_TO_INSERT_INTO_THE_QUEUE);
         }
-    }
+
 
     //TODO: handle to case where you cant connect to the given server.
     // maybe travers on all the servers list and break when you get the data.
