@@ -24,7 +24,7 @@ public class ProgressKeeper {
         this.targetFileName = fileName;
         this.targetFileSize = targetFileSize;
 
-        // if the both the target file and the meta datafile are already exists, init form file.
+        // if both the target file and the meta datafile are already exists, init form file.
         if(isInProgress()) {
             savedChunksArray = (boolean[]) readMetaDataFile(mapMetaDataFile);
             retrieveNumOfSavedChunks();
@@ -36,8 +36,7 @@ public class ProgressKeeper {
               fileNameMetaDataFile.createNewFile();
 
             } catch (IOException e){
-                System.err.println(e.getMessage());
-                e.printStackTrace();
+                System.err.println(RuntimeMessages.FAILED_INIT_META_DATA_FILES);
             }
 
             this.savedChunksArray = new boolean[(int) (targetFileSize / SIZE_OF_DATACHUNK) + 1];
@@ -76,8 +75,7 @@ public class ProgressKeeper {
             Files.move(tempMetaDataFile.toPath(), metaDataFile.toPath(), StandardCopyOption.ATOMIC_MOVE);
 
         } catch (IOException e){
-            System.err.println(e.getMessage());
-            e.printStackTrace();
+            //ignore
         }
     }
 
@@ -92,9 +90,7 @@ public class ProgressKeeper {
 
             return obj;
         } catch(IOException | ClassNotFoundException e){
-            System.err.println(e.getMessage());
-            System.err.println("could not read the meta data file. a new object was returned instead");
-            e.printStackTrace();
+            System.err.println(RuntimeMessages.COULD_NOT_READ_MATA_DATA);
         }
 
         return new Object();
