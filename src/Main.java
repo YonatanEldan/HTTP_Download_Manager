@@ -12,10 +12,11 @@ public class Main {
         int maxNumOfThreads = 4;
         // To avoid spaces in the beggining of the url
         //String str = args[0].replaceAll("\\s+","");
-        if (isURL(args[0])) {
-            System.out.println(args[0]);
-            servers = new String[]{args[0]};
-            System.out.println(servers[0]);
+        String str = new String(args[0]);
+        if (isURL(str)) {
+            System.out.println(str);
+            //servers = new String[]{"https://archive.org/download/Mario1_500/Mario1_500.avi​"};
+            System.out.println(str);
 
         } else {
             List<String> URLlist = new ArrayList<String>();
@@ -39,14 +40,14 @@ public class Main {
                 //E.printStackTrace();
             }
         }
-        if(args.length==2) {
+        if (args.length == 2) {
             maxNumOfThreads = Integer.parseInt(args[1]);
             System.out.println("Downloading using " + maxNumOfThreads + " connections...");
-        }
-        else{
+        } else {
             System.out.println("Downloading...");
         }
 
+        servers = new String[]{"https://archive.org/download/Mario1_500/Mario1_500.avi​"};
         //init manager
         Manager manager = new Manager(servers, maxNumOfThreads);
         manager.run();
