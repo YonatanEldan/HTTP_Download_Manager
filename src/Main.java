@@ -10,11 +10,12 @@ public class Main {
         String[] servers = null;
         // We will define the maximum numer of threads to be the file size / 25000
         int maxNumOfThreads = 4;
-        // To avoid spaces in the beginning of the url
-        String str = args[0].replaceAll("\\s+","");
-        if (isURL(str)) {
-            System.out.println(str);
-            servers = new String[]{str};
+        // To avoid spaces in the beggining of the url
+        //String str = args[0].replaceAll("\\s+","");
+        if (isURL(args[0])) {
+            System.out.println(args[0]);
+            servers = new String[]{args[0]};
+            System.out.println(servers[0]);
 
         } else {
             List<String> URLlist = new ArrayList<String>();
@@ -34,16 +35,16 @@ public class Main {
                 }
 
                 servers = URLlist.toArray(new String[URLlist.size()]);
-                if(args.length==2) {
-                    maxNumOfThreads = Integer.parseInt(args[1]);
-                    System.out.println("Downloading using " + maxNumOfThreads + " connections...");
-                }
-                else{
-                    System.out.println("Downloading...");
-                }
             } catch (Exception E) {
                 //E.printStackTrace();
             }
+        }
+        if(args.length==2) {
+            maxNumOfThreads = Integer.parseInt(args[1]);
+            System.out.println("Downloading using " + maxNumOfThreads + " connections...");
+        }
+        else{
+            System.out.println("Downloading...");
         }
 
         //init manager
