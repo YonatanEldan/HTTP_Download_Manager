@@ -5,7 +5,13 @@ import java.util.*;
 
 public class IdcDm {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
+        //basic check for input
+        if (args == null || args.length == 0){
+            System.out.println(RuntimeMessages.MISSING_ARGUMENTS_USAGE);
+            return;
+        }
+
         //In case we don't get an input for max num threads
         int maxNumOfThreads = 1;
 

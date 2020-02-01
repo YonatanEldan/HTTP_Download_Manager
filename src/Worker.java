@@ -46,6 +46,7 @@ public class Worker implements Runnable {
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Range", "bytes=" + this.curByteIndex + "-" + this.lastByteIndex);
             connection.setConnectTimeout(ConfigurationsSettings.TIMEOUT_FOR_WORKER);
+            connection.setReadTimeout(ConfigurationsSettings.TIMEOUT_FOR_WORKER);
 
             this.inputStream = connection.getInputStream();
 

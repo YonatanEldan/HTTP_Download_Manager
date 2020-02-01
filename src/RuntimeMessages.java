@@ -1,5 +1,9 @@
 public class RuntimeMessages {
 
+    //main
+    public static final String MISSING_ARGUMENTS_USAGE = "Missing arguments. \n" +
+                                                            "Usage: java IdcDm [server/list of servers] [maximum number of connections][optional]";
+
     //manager
     public static final String THE_PROGRAM_SHUT_DOWN = "The program shut down unexpectedly.\n" +
                                                         "Launch it again to resume your download.";
@@ -7,7 +11,7 @@ public class RuntimeMessages {
 
     // worker
     public static final String INPUTSTREAM_CLOSE_EXEPTION = "Failed Closing the connection with the server";
-    public static final String SERVER_CONNECTION_FAILED = "Connection to the server was failed.\n" +
+    public static final String SERVER_CONNECTION_FAILED = "Connection to the server has failed.\n" +
                                                             "Please restart the program to resume download.";
     public static final String FAILED_TO_FETCH_DATA_FROM_SERVER = "Failed to fetch data from the server";
     public static final String FAILED_TO_INSERT_INTO_THE_QUEUE = "Failed to insert the dataChunk into the queue";
