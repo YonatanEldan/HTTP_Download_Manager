@@ -23,14 +23,20 @@ public class Manager {
     public Manager(String[] servers, int maxThreadNum) {
         this.servers = servers;
 
-        // be default assign one worker per server.
+        // by default assign one worker per server.
         this.NUM_OF_WORKING_THREADS = maxThreadNum;
 
         getFileInfo(this.servers[0]);
+
         this.progressKeeper = new ProgressKeeper(targetFilename, fileSize);
     }
 
     public String execute() {
+        //validate the file size
+        if(this.fileSize <= 0){
+            return RuntimeMessages.SERVER_CONNECTION_FAILED;
+        }
+
 
         List<Thread> workerThreads = initWorkerThreads();
 
@@ -101,12 +107,8 @@ public class Manager {
         return workerThreads;
     }
 
-    private void writeToQueue(DataChunk dataChunk) {
-        try {
+    private void writeToQueue(DataChunk dataChunk) throws InterruptedException {
             this.queue.put(dataChunk);
-        } catch (Exception e) {
-            System.err.println(RuntimeMessages.FAILED_TO_INSERT_INTO_THE_QUEUE);
-        }
     }
 
     //TODO: handle to case where you cant connect to the given server.
@@ -118,7 +120,8 @@ public class Manager {
             conn.setRequestMethod("HEAD");
 
             this.fileSize = conn.getContentLengthLong();
-            // TODO: get the correct file name...
+
+            // get the correct file name...
             this.targetFilename = "Downloaded-" + URL.substring(URL.lastIndexOf('/')+1, URL.length() );;
 
         } catch (IOException e) {
